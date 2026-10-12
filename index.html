@@ -24,7 +24,7 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--body)}
-.app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+.app{display:grid;grid-template-columns:236px 1fr;min-height:100vh;background:linear-gradient(90deg,var(--board) 236px,transparent 236px)}
 
 /* Kenar çubuğu */
 .side{background:var(--board);color:var(--board-ink);padding:22px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:22px}
@@ -41,11 +41,35 @@ body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--body)
 .nav button{text-align:left;background:none;border:0;color:var(--board-mut);font:600 20px/1 var(--disp);padding:9px 10px;border-radius:6px;cursor:pointer;letter-spacing:.01em}
 .nav button:hover{color:var(--board-ink)}
 .nav button.on{color:var(--board-ink);background:var(--seg-off);box-shadow:inset 3px 0 0 var(--pro)}
-.bk{margin-top:auto;font-size:13px;color:var(--board-mut)}.bk.warn{color:#ffc46b}
+.bk{margin-top:auto;font-size:13px;color:var(--board-mut);border-top:1px solid var(--seg-off);padding-top:12px}
+.bk b{display:block;color:var(--board-ink);font-size:14px}.bk.ok b::before{content:"● ";color:#6fe0a5}.bk.warn b::before{content:"● ";color:#ffc46b}
+.bk button{margin-top:8px;width:100%;background:var(--pro);color:#0b1830;border:0;border-radius:6px;padding:7px;font:600 14px var(--body);cursor:pointer}
+.goal .cap,.date .cap{font-size:13px;color:var(--board-mut);margin-bottom:4px}
+.goal .gl{font:700 26px/1 var(--disp)}.goal .gl small{font:600 15px var(--disp);color:var(--board-mut)}
+.goal .gb{height:8px;border-radius:4px;background:var(--seg-off);margin:9px 0 5px;overflow:hidden}.goal .gb i{display:block;height:100%;background:var(--pro)}
+.goal .gs{font-size:13px;color:var(--board-mut)}
+.drow{display:flex;align-items:center;gap:12px}
+.away{font-size:13px;color:#ffc46b;margin-top:8px}.away:empty{display:none}
+.streak{display:inline-block;margin-top:6px;font-size:13px;color:var(--board-ink);background:var(--seg-off);border-radius:20px;padding:2px 10px}
+/* Kontrol listesi */
+.todo{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.todo .tc{font:700 30px/1 var(--disp);min-width:62px}.todo .tc small{font-size:16px;color:var(--mut)}
+.todo ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;flex:1}
+.todo li{font-size:14px;border:1px solid var(--rule);border-radius:20px;padding:3px 11px 3px 8px;color:var(--mut);background:var(--paper)}
+.todo li::before{content:"○ ";}
+.todo li.ok{color:var(--good);border-color:transparent;background:color-mix(in srgb,var(--good) 13%,transparent)}.todo li.ok::before{content:"✓ ";font-weight:700}
+.todo.done{border-color:var(--good)}
+.explain{background:var(--paper);border-radius:6px;padding:10px 12px;font-size:14px;color:var(--mut);margin:0 0 12px}
+.explain b{color:var(--ink)}
+/* Rehber */
+.guide h3{font:700 21px/1.15 var(--disp);margin:18px 0 6px}.guide h3:first-child{margin-top:0}
+.guide ol,.guide ul{padding-left:20px;margin:6px 0}.guide li{margin:4px 0}
+.sub3{font:700 19px var(--disp);margin:18px 0 4px}
+.guide p{max-width:75ch}.guide .k{font-weight:600;color:var(--ink)}
 
 main{padding:28px 32px 70px;max-width:1120px;width:100%}
-@media(max-width:900px){.app{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px;padding:14px}
- .date{border:0;padding:0;display:flex;align-items:center;gap:10px}.date .d{font-size:38px}.dnav{margin:0}.nav{flex-direction:row;overflow-x:auto;width:100%}.nav button{font-size:17px;white-space:nowrap}.bk{display:none}
+@media(max-width:900px){.app{grid-template-columns:1fr;background:none}.side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px;padding:14px}
+ .date{border:0;padding:0}.date .d{font-size:38px}.goal{min-width:200px}.brand{width:100%}.dnav{margin:0}.nav{flex-direction:row;overflow-x:auto;width:100%}.nav button{font-size:17px;white-space:nowrap}.bk{display:none}
  main{padding:18px 14px 60px}}
 
 /* Notlar */
@@ -187,16 +211,18 @@ a{color:var(--sig)}
 </style></head><body>
 <div class="app">
 <aside class="side">
- <div class="brand">Spor & Diyet Koçu<span>120 → 100 kg</span></div>
- <div class="date"><div class="d" id="dayNum"></div><div><div class="t" id="dayTxt"></div><div class="w" id="weekLbl"></div></div>
-  <div class="dnav"><button id="prev" aria-label="Önceki gün">Önceki</button><button id="isToday">Bugün</button><button id="next" aria-label="Sonraki gün">Sonraki</button></div></div>
- <nav class="nav" aria-label="Bölümler"><button data-t="bugun">Bugün</button><button data-t="antrenman">Antrenman</button><button data-t="ilerleme">İlerleme</button><button data-t="tarifler">Tarifler</button><button data-t="kanit">Kanıt</button><button data-t="ayarlar">Ayarlar</button></nav>
+ <div class="brand">Spor & Diyet Koçu</div>
+ <div class="goal" id="goal"></div>
+ <div class="date"><div class="cap">Gösterilen gün</div><div class="drow"><div class="d" id="dayNum"></div><div><div class="t" id="dayTxt"></div><div class="w" id="weekLbl"></div></div></div>
+  <div class="dnav"><button id="prev" aria-label="Önceki gün">‹ Önceki</button><button id="isToday">Bugün</button><button id="next" aria-label="Sonraki gün">Sonraki ›</button></div>
+  <div class="away" id="away"></div></div>
+ <nav class="nav" aria-label="Bölümler"><button data-t="bugun">Bugün</button><button data-t="antrenman">Antrenman</button><button data-t="ilerleme">İlerleme</button><button data-t="tarifler">Tarifler</button><button data-t="kanit">Kanıt</button><button data-t="rehber">Rehber</button><button data-t="ayarlar">Ayarlar</button></nav>
  <div class="bk" id="bk"></div>
 </aside>
 <main id="main"></main></div>
 <div id="flash" class="flash" role="status" aria-live="polite"></div>
 <script>
-const APP_VERSION='1.1.0';
+const APP_VERSION='1.2.0';
 // ===== BESİN VERİTABANI (100 g başına: kcal, protein, karbonhidrat, yağ) =====
 const FOODS = {
   yumurta:{n:'Yumurta',k:143,p:12.6,c:0.7,f:9.5,u:55,un:'adet'},
@@ -523,7 +549,7 @@ let st;
 function load(){try{st=JSON.parse(localStorage.getItem(KEY));}catch(e){st=null;}
  if(!st)st={settings:{...DEFAULT_SETTINGS},days:{},workouts:{},favs:[],hidden:[]};
  st.settings={...DEFAULT_SETTINGS,...st.settings};st.days=st.days||{};st.workouts=st.workouts||{};st.favs=st.favs||[];st.hidden=st.hidden||[];}
-function save(quiet){try{st._saved=Date.now();localStorage.setItem(KEY,JSON.stringify(st));if(!quiet)flash('Kaydedildi');}catch(e){flash('Kaydedilemedi: tarayıcı depolaması dolu veya kapalı',true);}}
+function save(quiet){try{st._saved=Date.now();localStorage.setItem(KEY,JSON.stringify(st));if(!quiet)flash('Kaydedildi');abSchedule();renderSide();}catch(e){flash('Kaydedilemedi: tarayıcı depolaması dolu veya kapalı',true);}}
 let cur=iso(new Date());let tab='bugun';
 const $=s=>document.querySelector(s);
 const h=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -550,10 +576,9 @@ function render(){const S=st.settings;const w=weekNo(S,cur);const d=parse(cur);
  $('#weekLbl').textContent=w>0?`Hafta ${w} / ${S.totalWeeks}`:'Program henüz başlamadı';
  $('#isToday').hidden=cur===iso(new Date());
  document.querySelectorAll('.nav button').forEach(b=>{b.classList.toggle('on',b.dataset.t===tab);b.setAttribute('aria-current',b.dataset.t===tab?'page':'false');});
- const v={bugun:vBugun,antrenman:vAntrenman,ilerleme:vIlerleme,tarifler:vTarifler,kanit:vKanit,ayarlar:vAyarlar}[tab];
- $('#main').innerHTML=v();bind();backupNag();}
-function backupNag(){const last=st._backup||0;const days=Math.floor((Date.now()-last)/864e5);const el=$('#bk');
- el.textContent=last?`Son yedek ${days} gün önce`:'Henüz yedek alınmadı';el.className='bk '+(!last||days>7?'warn':'');}
+ const v={bugun:vBugun,antrenman:vAntrenman,ilerleme:vIlerleme,tarifler:vTarifler,kanit:vKanit,rehber:vRehber,ayarlar:vAyarlar}[tab];
+ $('#main').innerHTML=v();bind();renderSide();}
+// (yan panel renderSide ile çiziliyor)
 function notes(){const S=st.settings;const d=parse(cur);const out=[];const pk=DAY_PROGRAM[d.getDay()];
  if(pk)out.push(`<div class="note gym"><b>Gym günü.</b> ${PROGRAM[pk].name.replace(/ \(.*\)/,'')}: ${PROGRAM[pk].ex.length} hareket. <button class="link" data-go="antrenman">Antrenmanı aç</button></div>`);
  else out.push(`<div class="note walk"><b>Hareket günü.</b> 30–45 dk yürüyüş veya hafif tempo.</div>`);
@@ -596,7 +621,7 @@ function vBugun(){const S=st.settings;const d=day();const t=dayTotals(st,cur);co
   <div class="fieldrow"><span class="fl">Enerji</span>${scale('energy',d.energy)}</div>
   ${parse(cur).getDay()===0&&w2(st.settings)?`<label class="chk"><input type="checkbox" data-f="photo" ${d.photo?'checked':''}> Fotoğrafları çektim</label>`:''}
   <label>Not<textarea data-f="note" rows="2" placeholder="Bugün dikkat çeken bir şey var mı?">${h(d.note)}</textarea></label>`);
- return `${notes()}${board}<div class="cols">${bf}${sup}${dn}${mv}</div>`;}
+ return `${restoreOffer()}${notes()}${todoStrip(cur)}${board}<div class="cols">${bf}${sup}${dn}${mv}</div>`;}
 function scale(f,v){let s='';for(let i=1;i<=10;i++)s+=`<button class="${+v===i?'on':''}" data-scale="${f}" data-v="${i}" aria-label="${i}">${i}</button>`;return `<div class="seg ten">${s}</div>`;}
 function recipeBody(r,mult=1){return `<ul class="ing">${r.i.map(([k,g])=>{const f=FOODS[k];const gg=Math.round(g*mult);const u=f.u?` <span class="u">${N(gg/f.u,1)} ${f.un}</span>`:'';return `<li><span>${h(f.n)}</span><b>${gg} g</b>${u}</li>`;}).join('')}</ul><p class="steps">${h(r.s)}</p><p class="hint">Hazırlanışta geçmeyen süzme yoğurt veya ekmek, tabağın yanında tüketilir.</p>`;}
 
@@ -630,15 +655,15 @@ function vIlerleme(){const S=st.settings;const ts=trendSeries(st);const lastT=tr
   ${stat('Hedef çizgisine göre',gap==null?'–':(gap>0?'+':'')+N(gap,1),'kg',gap==null?'':gap>0?'Çizginin üstündesin':'Çizginin altındasın',gap==null?'':gap>0.8?'warn':'good')}
   ${stat('Haftalık hız',rate==null?'–':'%'+N(rate,2),'',`Hedef %0,5–0,8`,band)}
   ${stat('Kalan',lastT!=null?N(lastT-S.goalWeight,1):'–','kg',`${S.goalWeight} kg hedefine`)}</div>`;
- const chartP=panel('Kilo trendi','günlük tartı, trend ve hedef çizgisi',chart(ts),'wide');
- const adP=panel('Adaptif kalori','2 haftada bir uygula',ad.ok?`<dl class="kv"><dt>Son 21 günde tam kayıt</dt><dd>${ad.n} gün</dd><dt>Ortalama alınan</dt><dd>${N(ad.avgK)} kcal</dd><dt>Tahmini bakım kalorin</dt><dd>${N(ad.tdee)} kcal</dd><dt>Haftada %0,65 için hedef</dt><dd class="hl">${N(ad.target)} kcal</dd></dl>
+ const chartP=panel('Kilo trendi','günlük tartı, trend ve hedef çizgisi',`<p class="explain"><b>Nasıl okunur?</b> Gri noktalar her sabahki tartın; su, tuz ve karbonhidrat yüzünden günden güne 1–2 kg oynar, bu normal. Mavi çizgi bu oynamayı süzen <b>trend</b>: kararları buna göre veririz. Turuncu kesikli çizgi, 8 ayda ${S.goalWeight} kg'a varmak için bugün olman gereken kilo. Mavi çizgi turuncunun altındaysa plandan öndesin; üstündeyse geridesin. Tek günlük sıçramaya bakma, mavi çizginin yönüne bak.</p>`+chart(ts),'wide');
+ const adP=panel('Adaptif kalori','2 haftada bir uygula',`<p class="explain"><b>Bu ne?</b> Bakım kalorisi, kilonu sabit tutan günlük kalori. Uygulama bunu formülle tahmin etmez; girdiğin kalorileri, kilo trendinin ne kadar düştüğüyle karşılaştırarak <b>senin vücudun için</b> hesaplar. Örnek: ortalama 2.300 kcal yiyip haftada 0,6 kg veriyorsan bakımın ~2.950 kcal'dir. Sonra haftada %0,65 kayıp için yeni bir hedef önerir.<br><b>Ne yapmalısın?</b> İki haftada bir, Pazar günü bu panele bak. Öneri mevcut hedeften 100 kcal'den fazla farklıysa düğmeye bas. Hesap, kahvaltıyı, akşam yemeğini ve kiloyu her gün girersen doğru çalışır.</p>`+(ad.ok?`<dl class="kv"><dt>Son 21 günde tam kayıt</dt><dd>${ad.n} gün</dd><dt>Ortalama alınan</dt><dd>${N(ad.avgK)} kcal</dd><dt>Tahmini bakım kalorin</dt><dd>${N(ad.tdee)} kcal</dd><dt>Haftada %0,65 için hedef</dt><dd class="hl">${N(ad.target)} kcal</dd></dl>
   <div class="actions"><button class="btn" id="applyK" data-k="${ad.target}" data-m="${ad.tdee}">Hedefi ${N(ad.target)} kcal yap</button><span class="hint">Şu anki hedef ${N(S.kcal)} kcal</span></div>`
-  :`<p>Hesap için son 21 günde en az 10 tam kayıt gerekiyor: kahvaltı, akşam yemeği ve kilo.</p><dl class="kv"><dt>Şu ana kadar</dt><dd>${ad.n} gün</dd><dt>Geçerli hedef</dt><dd>${N(S.kcal)} kcal</dd></dl>`);
- const alP=panel('Kas koruma alarmı',al.count>=2?'aktif':'',`<ul class="checks">${al.list.map(x=>`<li class="${x.on?'on':''}"><span class="mk" aria-hidden="true">${x.on?'!':'✓'}</span><span>${h(x.n)}</span><em>${h(x.v)}</em></li>`).join('')}</ul>
+  :`<p>Hesap için son 21 günde en az 10 tam kayıt gerekiyor: kahvaltı, akşam yemeği ve kilo.</p><dl class="kv"><dt>Şu ana kadar</dt><dd>${ad.n} gün</dd><dt>Geçerli hedef</dt><dd>${N(S.kcal)} kcal</dd></dl>`));
+ const alP=panel('Kas koruma alarmı',al.count>=2?'aktif':'otomatik izleniyor',`<p class="explain"><b>Bu ne?</b> Kilo verirken yağla birlikte kas da kaybetme riski var. Bu panel bunun 4 erken işaretini kendiliğinden izler. <b>Yeşil tik</b>: sorun yok, bir şey yapmana gerek yok. <b>Tek bir kırmızı işaret</b>: dikkat, ama tek başına müdahale gerekmez. <b>İki işaret aynı anda</b>: kalori 150–250 artırılır veya 1 hafta diyet molası verilir. Uyku ve enerji işaretleri, Bugün ekranına girdiğin değerlerden beslenir.</p><ul class="checks">${al.list.map(x=>`<li class="${x.on?'on':''}"><span class="mk" aria-hidden="true">${x.on?'!':'✓'}</span><span>${h(x.n)}</span><em>${h(x.v)}</em></li>`).join('')}</ul>
   ${al.count>=2?'<div class="note bad"><b>İki veya daha fazla tetikleyici aktif.</b> Kaloriyi 150–250 artır ya da 1 haftalık diyet molası ver; koçluk sohbetine yaz.</div>':'<p class="hint">İki tetikleyici birlikte yanarsa uyarır.</p>'}`,al.count>=2?'alarm':'');
- const volP=panel('Bu haftanın hacmi',`${fmtDate(wv.mon)} haftası, set`,`<table class="vol">${Object.entries(MUSCLES).map(([k,m])=>{const v=wv.vol[k];const pct=Math.min(100,v/m.hi*100);const c=v>=m.lo?'good':v>0?'part':'';
+ const volP=panel('Bu haftanın hacmi',`${fmtDate(wv.mon)} haftası`,`<p class="explain"><b>Bu ne?</b> Kas büyümesini en çok belirleyen şey, kas başına haftada yapılan zor set sayısı. Bu tablo Antrenman ekranına girdiğin setleri kas gruplarına göre sayar. <b>Dikey çizgi</b> minimum hedef; çubuk çizgiyi geçince yeşile döner. Hafta Pazartesi başlar, bu yüzden hafta ortasında çubukların kısa olması normal. Pazar günü kalın yazılı öncelikli kaslar yeşil değilse bir seans kaçmış demektir.</p><table class="vol">${Object.entries(MUSCLES).map(([k,m])=>{const v=wv.vol[k];const pct=Math.min(100,v/m.hi*100);const c=v>=m.lo?'good':v>0?'part':'';
   return `<tr class="${m.pri?'pri':''}"><th>${h(m.n)}</th><td class="bar"><span class="track"><span class="fill ${c}" style="width:${pct}%"></span><span class="band" style="left:${m.lo/m.hi*100}%"></span></span></td><td class="v">${v}<small>/${m.lo}–${m.hi}</small></td></tr>`;}).join('')}</table><p class="hint">Kalın yazılı satırlar öncelikli kaslar: sırt, yan omuz, göğüs.</p>`);
- const wP=panel('Bel ölçüsü','Pazar sabahı, göbek hizası',waist.length?`<ol class="wl">${waist.map(k=>`<li><span>${fmtDate(k)}</span><b>${N(st.days[k].waist,1)} cm</b></li>`).join('')}</ol>`:'<p class="hint">Pazar sabahları göbek hizasından ölç ve Bugün ekranına gir.</p>');
+ const wP=panel('Bel ölçüsü','Pazar sabahı, göbek hizası','<p class="explain">Bel çevresi, yağ kaybını kilodan daha net gösterir: kas kazanıp yağ yaktığın haftalarda kilo yerinde sayabilir ama bel incelir. Ayda 2–4 cm düşüş iyi gidiş demek.</p>'+(waist.length?`<ol class="wl">${waist.map(k=>`<li><span>${fmtDate(k)}</span><b>${N(st.days[k].waist,1)} cm</b></li>`).join('')}</ol>`:'<p class="hint">Pazar sabahları göbek hizasından ölç ve Bugün ekranına gir.</p>'));
  const rP=panel('Haftalık check-in raporu','Pazar günü',`<p class="hint">Raporu oluşturup koçluk sohbetine yapıştır; tüm haftanın özeti tek metinde.</p><div class="actions"><button class="btn" id="repBtn">Raporu kopyala</button></div><textarea id="rep" rows="11" readonly placeholder="Rapor burada görünecek"></textarea>`,'wide');
  return `${board}<div class="cols">${chartP}${adP}${alP}${volP}${wP}${rP}</div>`;}
 function chart(ts){if(ts.length<2)return '<div class="empty"><p>Grafik için en az iki günlük kilo girişi gerekiyor.</p></div>';const S=st.settings;
@@ -701,10 +726,112 @@ function vAyarlar(){const S=st.settings;const f=(k,l,step=1)=>`<label>${l}<input
  <div class="fields"><label>Başlangıç tarihi<input type="date" data-s="start" value="${S.start}"></label>${f('deloadEvery','Deload sıklığı, hafta')}</div>
  <label>Diyet molası haftaları<input data-s="molaWeeks" value="${S.molaWeeks.join(', ')}"></label>
  <div class="fields">${f('wheyK','1 ölçek whey, kcal')}${f('wheyP','1 ölçek whey, protein g')}</div>`)}
- ${panel('Yedekleme','haftada bir',`<p>Veriler yalnızca bu bilgisayarda, bu tarayıcıda saklanır. Tarayıcı verilerini temizlersen silinirler; bu yüzden haftada bir yedek indir.</p>
- <div class="actions"><button class="btn" id="exp">Yedeği indir</button><label class="btn ghost">Yedekten geri yükle<input type="file" id="imp" accept=".json,application/json" hidden></label></div>
- <dl class="kv"><dt>Son kayıt</dt><dd>${st._saved?new Date(st._saved).toLocaleString('tr-TR'):'–'}</dd><dt>Son yedek</dt><dd>${st._backup?new Date(st._backup).toLocaleString('tr-TR'):'Henüz yok'}</dd><dt>Sürüm</dt><dd>${APP_VERSION}</dd></dl>
+ ${panel('Verilerin ve yedek','',`<p>Girdiğin her şey anında bu bilgisayara kaydedilir; "Kaydet" düğmesi yok. Ek güvenlik için <b>otomatik yedek</b> var: bir kez bir dosya seçersin, uygulama her değişiklikten sonra o dosyayı kendisi günceller. Dosyayı Google Drive veya OneDrive klasörüne koyarsan yedek buluta da gider.</p>
+ ${abPanel()}
+ <h3 class="sub3">Elle yedek</h3><div class="actions"><button class="btn ghost" id="exp">Yedek dosyası indir</button><label class="btn ghost">Dosyadan geri yükle<input type="file" id="imp" accept=".json,application/json" hidden></label></div>
+ <dl class="kv"><dt>Son kayıt</dt><dd>${st._saved?new Date(st._saved).toLocaleString('tr-TR'):'–'}</dd><dt>Sürüm</dt><dd>${APP_VERSION}</dd></dl>
  <hr><button class="btn danger" id="reset">Tüm verileri sil</button>`)}</div>`;}
+
+// ===== GÜNLÜK KONTROL LİSTESİ & SERİ =====
+function todoItems(s){const d=st.days[s]||{};const gymDay=DAY_PROGRAM[parse(s).getDay()];const wo=st.workouts[s];
+ const gymDone=!!wo&&Object.values(wo.ex||{}).some(a=>a.some(x=>+x[0]>0&&+x[1]>0));
+ const moved=gymDone||(d.move&&d.move!=='Dinlenme'&&+d.moveMin>0);
+ const p=dayTotals(st,s).p;
+ return [['Kilo',+d.w>0],['Kahvaltı',!!d.bf?.rid],['Whey ×2',(+d.whey||0)>=2],['Kreatin',!!d.kreatin],['Akşam yemeği',!!d.din?.mode],
+  [gymDay?'Antrenman':'Hareket',gymDay?gymDone:moved],['Uyku',+d.sleep>0],['Protein hedefi',p>=st.settings.protein*0.9]];}
+function dayComplete(s){return todoItems(s).every(x=>x[1]);}
+function streak(){const today=iso(new Date());let s=dayComplete(today)?today:addDays(today,-1);let n=0;
+ while(s>=st.settings.start&&dayComplete(s)){n++;s=addDays(s,-1);}return n;}
+function todoStrip(s){const it=todoItems(s);const ok=it.filter(x=>x[1]).length;const all=ok===it.length;
+ return `<div class="todo ${all?'done':''}"><div class="tc">${ok}<small>/${it.length}</small></div><ul>${it.map(([n,v])=>`<li class="${v?'ok':''}">${n}</li>`).join('')}</ul>
+ <span class="hint">${all?'Gün tamam. Seri devam ediyor.':'Günün listesi. Hepsi tamamlanınca gün seriye eklenir.'}</span></div>`;}
+
+// ===== YAN PANEL =====
+function renderSide(){const S=st.settings;const ts=trendSeries(st);const now=trendAt(ts,iso(new Date()));
+ const lost=now!=null?Math.max(0,S.startWeight-now):0;const pct=Math.min(100,lost/(S.startWeight-S.goalWeight)*100);const sk=streak();
+ $('#goal').innerHTML=`<div class="cap">Hedef</div><div class="gl">${N(S.startWeight)} → ${N(S.goalWeight)}<small> kg</small></div><div class="gb"><i style="width:${pct}%"></i></div>
+  <div class="gs">${now!=null?`Şu an ${N(now,1)} kg · ${N(lost,1)} kg verildi (%${N(pct)})`:'İlk kilonu girince ilerleme görünür'}</div>${sk?`<span class="streak">Seri: ${sk} tam gün</span>`:''}`;
+ const diff=diffDays(iso(new Date()),cur);
+ $('#away').textContent=diff===0?'':diff<0?`Geçmiş bir günü düzenliyorsun (${-diff} gün önce).`:`İleri bir günü görüntülüyorsun (${diff} gün sonra).`;
+ const el=$('#bk');
+ if(!AB.supported){const last=st._backup||0;const days=Math.floor((Date.now()-last)/864e5);
+  el.className='bk warn';el.innerHTML=`<b>Otomatik yedek yok</b>Bu tarayıcı desteklemiyor; Chrome kullan. ${last?`Son elle yedek ${days} gün önce.`:''}`;return;}
+ if(!AB.handle){el.className='bk warn';el.innerHTML=`<b>Otomatik yedek kapalı</b>Bir kez aç, sonra kendisi çalışır.<button data-ab="connect">Otomatik yedeği aç</button>`;return;}
+ if(AB.perm!=='granted'){el.className='bk warn';el.innerHTML=`<b>Yedek onay bekliyor</b>Chrome her açılışta bir kez izin istiyor.<button data-ab="resume">Yedeğe devam et</button>`;return;}
+ el.className='bk ok';el.innerHTML=`<b>Otomatik yedek açık</b>${AB.last?`Son yedek ${new Date(AB.last).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})}`:'Hazır'} · ${h(AB.handle.name)}`;}
+
+// ===== OTOMATİK YEDEK (dosyaya yazar) =====
+const AB={handle:null,perm:'none',last:+(localStorage.getItem('koc_lastAuto')||0),supported:typeof window.showSaveFilePicker==='function'};
+function idb(){return new Promise((res,rej)=>{const r=indexedDB.open('koc',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function kvGet(k){try{const db=await idb();return await new Promise(res=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>res(null);});}catch(e){return null;}}
+async function kvSet(k,v){try{const db=await idb();await new Promise(res=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=res;});}catch(e){}}
+async function abInit(){if(!AB.supported){renderSide();return;}
+ AB.handle=await kvGet('backupHandle');if(AB.handle){try{AB.perm=await AB.handle.queryPermission({mode:'readwrite'});}catch(e){AB.perm='prompt';}}
+ if(AB.perm==='granted')await abWrite();render();}
+async function abConnect(){try{const hd=await window.showSaveFilePicker({suggestedName:'spor-diyet-otomatik-yedek.json',types:[{description:'Yedek dosyası',accept:{'application/json':['.json']}}]});
+  AB.handle=hd;AB.perm='granted';await kvSet('backupHandle',hd);await abWrite();flash('Otomatik yedek açıldı');}
+ catch(e){if(e.name!=='AbortError')flash('Yedek dosyası seçilemedi',true);}render();}
+async function abResume(){try{AB.perm=await AB.handle.requestPermission({mode:'readwrite'});if(AB.perm==='granted'){await abWrite();flash('Otomatik yedek devam ediyor');}}catch(e){}render();}
+async function abOff(){if(!confirm('Otomatik yedek kapatılsın mı? Dosya silinmez, sadece güncellenmez.'))return;AB.handle=null;AB.perm='none';await kvSet('backupHandle',null);render();}
+let abTimer;function abSchedule(){if(AB.perm!=='granted'||!AB.handle)return;clearTimeout(abTimer);abTimer=setTimeout(abWrite,1200);}
+async function abWrite(){if(!AB.handle||AB.perm!=='granted')return;
+ try{const w=await AB.handle.createWritable();await w.write(JSON.stringify(st));await w.close();AB.last=Date.now();localStorage.setItem('koc_lastAuto',AB.last);}
+ catch(e){AB.perm='prompt';}renderSide();}
+async function abRestore(){try{if(AB.perm!=='granted'){AB.perm=await AB.handle.requestPermission({mode:'readwrite'});if(AB.perm!=='granted')return;}
+  const f=await AB.handle.getFile();const o=JSON.parse(await f.text());if(!o.days)throw 0;
+  const n=Object.keys(o.days).length;if(!confirm(`Yedekte ${n} günlük kayıt var. Bu bilgisayardaki veriler bununla değiştirilsin mi?`))return;
+  localStorage.setItem(KEY,JSON.stringify(o));load();render();flash('Yedekten geri yüklendi');}
+ catch(e){flash('Yedek dosyası okunamadı',true);}}
+function hasData(){return Object.values(st.days).some(d=>+d.w>0||d.bf?.rid)||Object.keys(st.workouts).length>0;}
+function restoreOffer(){if(!AB.handle||hasData())return '';
+ return `<div class="note warn"><b>Bu bilgisayarda kayıt yok, ama otomatik yedek dosyan bağlı.</b> Eski verilerini geri getirmek için: <button class="link" data-ab="restore">Yedekten geri yükle</button></div>`;}
+function abPanel(){if(!AB.supported)return '<p class="note warn">Bu tarayıcı otomatik yedeği desteklemiyor. Uygulamayı Chrome veya Edge ile aç.</p>';
+ if(!AB.handle)return `<div class="actions"><button class="btn" data-ab="connect">Otomatik yedeği aç</button><span class="hint">Açılan pencerede bir klasör seç (önerim: Google Drive veya Belgeler) ve Kaydet'e bas.</span></div>`;
+ return `<dl class="kv"><dt>Yedek dosyası</dt><dd>${h(AB.handle.name)}</dd><dt>Durum</dt><dd>${AB.perm==='granted'?'Açık':'Onay bekliyor'}</dd><dt>Son otomatik yedek</dt><dd>${AB.last?new Date(AB.last).toLocaleString('tr-TR'):'–'}</dd></dl>
+ <div class="actions">${AB.perm!=='granted'?'<button class="btn" data-ab="resume">Yedeğe devam et</button>':''}<button class="btn ghost" data-ab="restore">Bu dosyadan geri yükle</button><button class="btn ghost" data-ab="connect">Başka dosya seç</button><button class="btn ghost" data-ab="off">Kapat</button></div>
+ <p class="hint">Chrome, uygulama her açıldığında dosyaya yazmak için bir kez izin isteyebilir. Sol alttaki "Yedeğe devam et"e basman yeter. İzin penceresinde "Her ziyarette izin ver" çıkarsa onu seç; bir daha sormaz.</p>`;}
+
+// ===== REHBER =====
+function vRehber(){return `<div class="cols">${panel('Her gün: 5 dakikalık rutin','sırayla','<div class="guide"><ol>'+
+ '<li><span class="k">Sabah 05:00, tuvaletten sonra (30 sn).</span> Tartıl ve <b>Bugün</b> ekranındaki büyük kilo kutusuna yaz. Aynı ekranda dün geceki <b>uyku</b> saatini gir.</li>'+
+ '<li><span class="k">Kahvaltı (1 dk).</span> "Bugünün önerisi"ni yapabilir ya da Tarifler\'den istediğini seçebilirsin. Malzemeleri tarifte yazan gramlarla tart. Yaptıktan sonra <b>Bunu yaptım</b>\'a bas veya listeden seç; kalori ve protein kendiliğinden eklenir. <b>Kreatin</b> kutusunu işaretle.</li>'+
+ '<li><span class="k">Gün içinde.</span> Her whey içtiğinde <b>Whey</b> sayısını artır (hedef 2). Ara öğün yaptıysan listeden seç.</li>'+
+ '<li><span class="k">Gym akşamı (1 dk).</span> Salonda telefonun not uygulamasına <code>Squat 80x8 80x8 80x7</code> gibi yaz. Eve gelince notu <b>Antrenman</b> ekranına yapıştır ve <b>Notu işle</b>\'ye bas.</li>'+
+ '<li><span class="k">Akşam yemeği (20 sn).</span> Ne yediğini seç: yemekhane etli, yemekhane sebze, ev yemeği… Tatlı aldıysan kutuyu işaretle.</li>'+
+ '<li><span class="k">Yatmadan önce (30 sn).</span> Hareket türünü ve dakikasını, <b>açlık</b> ve <b>enerji</b> puanını gir. Üstteki listede 8/8 görünce gün tamam.</li></ol>'+
+ '<p>Unuttuğun bir gün olursa sol menüdeki <b>‹ Önceki</b> ile o güne git ve doldur. <b>Bugün</b> düğmesi seni bugüne geri getirir.</p></div>')}
+ ${panel('Hangi alanlar ne işe yarıyor?','','<div class="guide"><table class="ev"><tr><th>Alan</th><td><b>Neden giriyorsun</b></td></tr>'+
+ '<tr><th>Kilo</th><td>Trend, haftalık hız ve adaptif kalori bununla hesaplanır. Her sabah gir.</td></tr>'+
+ '<tr><th>Kahvaltı, akşam, whey</th><td>Günlük kalori ve protein. Adaptif kalori, bunlar olmadan bakım kalorini bulamaz.</td></tr>'+
+ '<tr><th>Antrenman setleri</th><td>Ağırlık artırma önerisi, haftalık hacim ve kuvvet düşüşü alarmı.</td></tr>'+
+ '<tr><th>Uyku</th><td>7 saatin altı kas kaybını artırır; kas koruma alarmına girer.</td></tr>'+
+ '<tr><th>Enerji</th><td>2 hafta boyunca 4 ve altı, aşırı kalori açığının işareti; alarma girer.</td></tr>'+
+ '<tr><th>Açlık</th><td>Diyetin sürdürülebilir olup olmadığını gösterir; haftalık rapora girer. Sürekli 7 ve üstüyse öğün yapısını değiştiririz.</td></tr>'+
+ '<tr><th>Hareket</th><td>Her gün aktif olma hedefin; haftalık rapora girer.</td></tr>'+
+ '<tr><th>Not, ekstra kcal, menü kcal</th><td>İsteğe bağlı. Dışarıda yemek gibi plan dışı durumlar için.</td></tr></table></div>')}
+ ${panel('Her Pazar: check-in','10 dakika','<div class="guide"><ol>'+
+ '<li>Sabah tartıldıktan sonra belini göbek hizasından ölç ve Bugün ekranındaki <b>Bel</b> kutusuna yaz.</li>'+
+ '<li>İki haftada bir aynı ışıkta ön, yan ve arka fotoğraf çek (uygulama o Pazar hatırlatır).</li>'+
+ '<li><b>İlerleme</b> ekranında <b>Raporu kopyala</b>\'ya bas ve koçluk sohbetine yapıştır. Programı ve kaloriyi birlikte ayarlarız.</li>'+
+ '<li>İki haftada bir <b>Adaptif kalori</b> paneline bak; öneri farklıysa yeni hedefi uygula.</li></ol></div>')}
+ ${panel('Sol menü','','<div class="guide"><ul>'+
+ '<li><span class="k">Hedef:</span> 120 → 100 kg ve şu ana kadar verdiğin kilo. Çubuk, yolun yüzde kaçını geldiğini gösterir. Tıklayınca İlerleme açılır.</li>'+
+ '<li><span class="k">Seri:</span> Kontrol listesini art arda kaç gün tam doldurduğun. Disiplin göstergen bu.</li>'+
+ '<li><span class="k">Gösterilen gün:</span> Ekranda hangi günün verisini gördüğün. Normalde bugündür; Önceki/Sonraki ile değişir. Geçmiş bir gündeysen turuncu bir uyarı çıkar.</li>'+
+ '<li><span class="k">Hafta X / 34:</span> 8 aylık programın kaçıncı haftasındasın. 10, 20 ve 30. haftalar diyet molası; her 6 haftada bir deload haftası. O haftalarda üstte uyarı çıkar.</li>'+
+ '<li><span class="k">Otomatik yedek:</span> Yeşilse veriler dosyaya da yazılıyor. Turuncuysa bir kez tıkla.</li></ul></div>')}
+ ${panel('Ekranlar','','<div class="guide"><ul>'+
+ '<li><span class="k">Bugün:</span> Günlük tüm girişler. En çok kullanacağın ekran.</li>'+
+ '<li><span class="k">Antrenman:</span> Pazartesi A, Çarşamba B, Cuma C kendiliğinden açılır. Her hareketin altında "Nasıl yapılır" açıklaması, sağında geçen seans ve bugünkü öneri var. Yeşil ↑ önerisi ağırlığı artırma zamanı demek. Kaçırdığın seansı başka bir güne almak için üstten A/B/C seç.</li>'+
+ '<li><span class="k">İlerleme:</span> Kilo trendi, adaptif kalori, kas koruma alarmı, haftalık hacim, bel ve haftalık rapor. Her panelin üstünde nasıl okunacağı yazıyor.</li>'+
+ '<li><span class="k">Tarifler:</span> 50 kahvaltı ve ara öğünler. ☆ ile favorile (öneride daha sık çıkar), beğenmediğini gizle (hiç çıkmaz).</li>'+
+ '<li><span class="k">Kanıt:</span> Kuralların hangi araştırmaya dayandığı.</li>'+
+ '<li><span class="k">Ayarlar:</span> Hedefler ve yedek. Kalori hedefini elle değiştirmen gerekmez; adaptif kalori önerir.</li></ul></div>')}
+ ${panel('Plan dışı durumlar','','<div class="guide"><ul>'+
+ '<li><span class="k">Dışarıda yedim:</span> Akşam yemeğinde "Kendim gireceğim"i seç ve tahmini kaloriyi yaz. Tahmin kötü de olsa boş bırakmaktan iyidir.</li>'+
+ '<li><span class="k">Gym\'e gidemedim:</span> Ertesi gün Antrenman ekranında kaçan seansı seç ve onu yap. Haftalık hacim yerine gelir.</li>'+
+ '<li><span class="k">Tartıda ani artış:</span> Tuzlu yemek, kreatin başlangıcı veya yoğun antrenman su tutturur. Trende bak, tek güne değil.</li>'+
+ '<li><span class="k">Kırmızı alarm:</span> Raporu hemen koçluk sohbetine gönder.</li></ul></div>')}</div>`;}
 
 // ===== OLAYLAR =====
 function bind(){
@@ -732,6 +859,7 @@ function bind(){
   (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>flash('Rapor kopyalandı')).catch(()=>{try{document.execCommand('copy');flash('Rapor kopyalandı');}catch(e){flash('Metni seçip kendin kopyala',true);}});};
  document.querySelectorAll('[data-s]').forEach(el=>el.addEventListener('change',()=>{const k=el.dataset.s;let v=el.value;
   if(k==='molaWeeks')v=v.split(/[ ,;]+/).map(Number).filter(x=>x>0);else if(k!=='start')v=+v;st.settings[k]=v;save();render();}));
+ document.querySelectorAll('#main [data-ab]').forEach(b=>b.onclick=()=>({connect:abConnect,resume:abResume,restore:abRestore,off:abOff})[b.dataset.ab]());
  const ex=$('#exp');if(ex)ex.onclick=()=>{st._backup=Date.now();save(true);const b=new Blob([JSON.stringify(st,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`spor-diyet-yedek-${iso(new Date())}.json`;a.click();flash('Yedek indirildi');render();};
  const im=$('#imp');if(im)im.onchange=()=>{const f=im.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.days)throw 0;if(confirm('Bu bilgisayardaki veriler yedekteki verilerle değiştirilsin mi?')){localStorage.setItem(KEY,JSON.stringify(o));load();render();flash('Yedek geri yüklendi');}}catch(e){flash('Bu dosya geçerli bir yedek değil',true);}};r.readAsText(f);};
  const rs=$('#reset');if(rs)rs.onclick=()=>{if(confirm('Tüm veriler silinecek. Önce yedek indirdin mi?')&&confirm('Son onay: veriler geri getirilemez.')){localStorage.removeItem(KEY);load();render();}};}
@@ -742,7 +870,10 @@ window.addEventListener('DOMContentLoaded',()=>{load();
  document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render();window.scrollTo(0,0);});
  $('#prev').onclick=()=>{cur=addDays(cur,-1);render();};$('#next').onclick=()=>{cur=addDays(cur,1);render();};$('#isToday').onclick=()=>{cur=iso(new Date());render();};
  document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select'))return;if(e.key==='ArrowLeft')$('#prev').click();if(e.key==='ArrowRight')$('#next').click();});
- render();
+ $('#bk').addEventListener('click',e=>{const b=e.target.closest('[data-ab]');if(!b)return;({connect:abConnect,resume:abResume})[b.dataset.ab]();});
+ $('#goal').addEventListener('click',()=>{tab='ilerleme';render();});
+ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
+ render();abInit();
  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});});
 
 </script></body></html>

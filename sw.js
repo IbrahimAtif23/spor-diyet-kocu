@@ -1,6 +1,6 @@
 // Çevrimdışı çalışma: uygulama dosyalarını önbelleğe alır.
 // Yeni sürüm yüklediğinde VERSION'ı artır; uygulama bir sonraki açılışta güncellenir.
-const VERSION='koc-1.1.0';
+const VERSION='koc-1.2.0';
 const FILES=['./','index.html','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png','fonts/barlow-condensed-latin-600-normal.woff2','fonts/barlow-condensed-latin-700-normal.woff2','fonts/barlow-condensed-latin-ext-600-normal.woff2','fonts/barlow-condensed-latin-ext-700-normal.woff2','fonts/source-sans-3-latin-400-normal.woff2','fonts/source-sans-3-latin-600-normal.woff2','fonts/source-sans-3-latin-ext-400-normal.woff2','fonts/source-sans-3-latin-ext-600-normal.woff2'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
