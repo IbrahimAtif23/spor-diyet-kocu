@@ -64,6 +64,11 @@ body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--body)
 /* Rehber */
 .guide h3{font:700 21px/1.15 var(--disp);margin:18px 0 6px}.guide h3:first-child{margin-top:0}
 .guide ol,.guide ul{padding-left:20px;margin:6px 0}.guide li{margin:4px 0}
+.opt{font-weight:400;color:var(--mut)}
+.panel.mine{grid-column:1/-1;margin-bottom:18px}
+.clist{list-style:none;padding:0;margin:0 0 6px}.clist li{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.clist .hint{display:block;margin:2px 0 0}.clist .v{font:700 20px var(--disp);text-align:right;white-space:nowrap}.clist .v small{display:block;font:14px var(--body);color:var(--mut)}.clist .actions{grid-column:1/-1;margin-top:2px}
+.cform{background:var(--paper);border-radius:8px;padding:4px 14px 12px}
 .sub3{font:700 19px var(--disp);margin:18px 0 4px}
 .guide p{max-width:75ch}.guide .k{font-weight:600;color:var(--ink)}
 
@@ -222,7 +227,7 @@ a{color:var(--sig)}
 <main id="main"></main></div>
 <div id="flash" class="flash" role="status" aria-live="polite"></div>
 <script>
-const APP_VERSION='1.2.0';
+const APP_VERSION='1.3.0';
 // ===== BESİN VERİTABANI (100 g başına: kcal, protein, karbonhidrat, yağ) =====
 const FOODS = {
   yumurta:{n:'Yumurta',k:143,p:12.6,c:0.7,f:9.5,u:55,un:'adet'},
@@ -460,13 +465,21 @@ function isDeload(S,s){const w=weekNo(S,s);return w>0 && w%S.deloadEvery===0 && 
 // ===== BESİN HESABI =====
 function macros(items,mult=1){let t={k:0,p:0,c:0,f:0};for(const [key,g] of items){const f=FOODS[key];if(!f)continue;for(const x of ['k','p','c','f'])t[x]+=f[x]*g*mult/100;}return t;}
 function recipeById(id){return RECIPES.find(r=>r.id==id);}
+function customById(st,id){return (st.custom||[]).find(x=>x.id===id);}
+// Kahvaltı üç şekilde girilir: hazır tarif (rid sayı), kendi tarifim (rid 'c…'), tarifsiz elle (manual)
+function bfMacros(st,bf){if(!bf)return null;const mult=+bf.mult||1;
+ if(bf.manual)return {k:+bf.k||0,p:+bf.p||0,c:null,f:null};
+ if(!bf.rid)return null;
+ if(String(bf.rid).startsWith('c')){const c=customById(st,bf.rid);if(!c)return null;return {k:c.k*mult,p:c.p*mult,c:c.c!=null&&c.c!==''?c.c*mult:null,f:c.f!=null&&c.f!==''?c.f*mult:null};}
+ const r=recipeById(bf.rid);return r?macros(r.i,mult):null;}
+function bfDone(bf){return !!bf&&(bf.manual?(+bf.k>0||+bf.p>0):!!bf.rid);}
 function suggestRecipe(st,s){const pool=RECIPES.filter(r=>!st.hidden.includes(r.id));if(!pool.length)return RECIPES[0];
  const fav=pool.filter(r=>st.favs.includes(r.id));const n=diffDays('2026-01-01',s);
  if(fav.length && n%2===0) return fav[(n/2)%fav.length];return pool[n%pool.length];}
 
 function dayTotals(st,s){const d=st.days[s];let k=0,p=0;if(!d)return {k,p,logged:false};
  let logged=false;
- if(d.bf&&d.bf.rid){const r=recipeById(d.bf.rid);if(r){const m=macros(r.i,d.bf.mult||1);k+=m.k;p+=m.p;logged=true;}}
+ if(d.bf){const bm=bfMacros(st,d.bf);if(bm){k+=bm.k;p+=bm.p;}}
  const w=+d.whey||0;k+=w*st.settings.wheyK;p+=w*st.settings.wheyP;
  if(d.snack){const sn=SNACKS.find(x=>x.id===d.snack);if(sn){const m=macros(sn.i);k+=m.k;p+=m.p;}}
  if(d.din&&d.din.mode){ if(d.din.mode==='ozel'){k+=+d.din.k||0;p+=+d.din.p||0;}
@@ -475,7 +488,7 @@ function dayTotals(st,s){const d=st.days[s];let k=0,p=0;if(!d)return {k,p,logged
     if(d.din.tatli){dk+=300;dp+=4;} if(d.din.ikinci){dk+=Math.round(dk*0.4);dp+=Math.round(dp*0.4);}
     k+=dk;p+=dp;}}
  k+=+(d.ek_k||0);p+=+(d.ek_p||0);
- const full=!!(d.bf&&d.bf.rid)&&!!(d.din&&d.din.mode);
+ const full=bfDone(d.bf)&&!!(d.din&&d.din.mode);
  return {k:Math.round(k),p:Math.round(p),logged:full};}
 
 // ===== TREND =====
@@ -548,7 +561,7 @@ const KEY='sporDiyetKoc_v1';
 let st;
 function load(){try{st=JSON.parse(localStorage.getItem(KEY));}catch(e){st=null;}
  if(!st)st={settings:{...DEFAULT_SETTINGS},days:{},workouts:{},favs:[],hidden:[]};
- st.settings={...DEFAULT_SETTINGS,...st.settings};st.days=st.days||{};st.workouts=st.workouts||{};st.favs=st.favs||[];st.hidden=st.hidden||[];}
+ st.settings={...DEFAULT_SETTINGS,...st.settings};st.days=st.days||{};st.workouts=st.workouts||{};st.favs=st.favs||[];st.hidden=st.hidden||[];st.custom=st.custom||[];}
 function save(quiet){try{st._saved=Date.now();localStorage.setItem(KEY,JSON.stringify(st));if(!quiet)flash('Kaydedildi');abSchedule();renderSide();}catch(e){flash('Kaydedilemedi: tarayıcı depolaması dolu veya kapalı',true);}}
 let cur=iso(new Date());let tab='bugun';
 const $=s=>document.querySelector(s);
@@ -568,7 +581,7 @@ function meter(v,max,kind=''){const n=Math.max(0,Math.min(12,Math.round(v/max*10
  for(let i=0;i<10;i++)s+=`<i class="${i<n?'f':''}"></i>`;return `<span class="meter ${kind} ${v>max*1.04?'over':''}" role="img" aria-label="%${Math.round(v/max*100)}">${s}</span>`;}
 function panel(title,aside,body,cls=''){return `<section class="panel ${cls}"><header><h2>${title}</h2>${aside?`<span class="aside">${aside}</span>`:''}</header>${body}</section>`;}
 function stat(label,value,unit,sub,cls=''){return `<div class="stat ${cls}"><div class="num">${value}${unit?`<small>${unit}</small>`:''}</div><div class="lab">${label}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`;}
-function macroLine(m){return `<div class="macros"><span><b>${N(m.k)}</b> kcal</span><span class="pr"><b>${N(m.p)}</b> g protein</span><span><b>${N(m.c)}</b> g karb.</span><span><b>${N(m.f)}</b> g yağ</span></div>`;}
+function macroLine(m){return `<div class="macros"><span><b>${N(m.k)}</b> kcal</span><span class="pr"><b>${N(m.p)}</b> g protein</span>${m.c!=null?`<span><b>${N(m.c)}</b> g karb.</span>`:''}${m.f!=null?`<span><b>${N(m.f)}</b> g yağ</span>`:''}</div>`;}
 
 // ===== ÇERÇEVE =====
 function render(){const S=st.settings;const w=weekNo(S,cur);const d=parse(cur);
@@ -589,8 +602,8 @@ function notes(){const S=st.settings;const d=parse(cur);const out=[];const pk=DA
 
 // ===== BUGÜN =====
 function vBugun(){const S=st.settings;const d=day();const t=dayTotals(st,cur);const tk=targetK();
- const sug=suggestRecipe(st,cur);const rid=d.bf?.rid||'';const r=rid?RECIPES.find(x=>x.id==rid):null;
- const rm=r?macros(r.i,d.bf.mult||1):null;const din=d.din||{};const menu=din.menu||['','','',''];
+ const sug=suggestRecipe(st,cur);const bfv=d.bf||{};const rid=bfv.rid||'';const isC=String(rid).startsWith('c');const r=rid&&!isC?RECIPES.find(x=>x.id==rid):null;const cr=isC?customById(st,rid):null;
+ const rm=bfMacros(st,bfv);const din=d.din||{};const menu=din.menu||['','','',''];
  const ts=trendSeries(st);const tr=trendAt(ts,cur);
  const recOpts=RECIPES.filter(x=>!st.hidden.includes(x.id)||x.id==rid).map(x=>{const m=macros(x.i);return `<option value="${x.id}" ${x.id==rid?'selected':''}>${x.id}. ${h(x.n)} (${N(m.k)} kcal, ${N(m.p)} g P)</option>`;}).join('');
  const board=`<div class="board">
@@ -599,9 +612,9 @@ function vBugun(){const S=st.settings;const d=day();const t=dayTotals(st,cur);co
   <div class="stat"><div class="num">${N(t.p)}<small>/ ${N(S.protein)} g</small></div><div class="lab">Protein</div>${meter(t.p,S.protein,'pro')}</div></div>`;
  const bf=panel('Kahvaltı','gramla tart',`
   <div class="sug"><span>Bugünün önerisi</span><b>${sug.id}. ${h(sug.n)}</b><button class="btn sm" data-pick="${sug.id}">Bunu yaptım</button></div>
-  <div class="fields"><label class="grow">Yaptığım tarif<select data-f="bf.rid" data-num><option value="">Tarif seç</option>${recOpts}</select></label>
-  <label>Porsiyon<select data-f="bf.mult" data-num>${[0.75,1,1.25].map(m=>`<option ${((d.bf?.mult||1)==m)?'selected':''} value="${m}">${m===1?'Tarif kadar':'× '+N(m,2)}</option>`).join('')}</select></label></div>
-  ${rm?macroLine(rm)+`<details><summary>Malzemeler ve hazırlanış</summary>${recipeBody(r,d.bf.mult||1)}</details>`:'<p class="hint">Tarif seçince kalori ve protein günlüğe otomatik eklenir.</p>'}`);
+  <div class="fields"><label class="grow">Ne yaptım?<select data-bf>${bfOptions(bfv,recOpts)}</select></label>
+  ${bfv.manual||!rid?'':`<label>Porsiyon<select data-f="bf.mult" data-num>${[0.5,0.75,1,1.25,1.5].map(m=>`<option ${((bfv.mult||1)==m)?'selected':''} value="${m}">${m===1?'Tarif kadar':'× '+N(m,2)}</option>`).join('')}</select></label>`}</div>
+  ${bfv.manual?manualBf(bfv):rm?macroLine(rm)+(r?`<details><summary>Malzemeler ve hazırlanış</summary>${recipeBody(r,bfv.mult||1)}</details>`:cr&&cr.note?`<details><summary>Notlarım</summary><p class="steps">${h(cr.note)}</p></details>`:''):'<p class="hint">Hazır tariflerden birini ya da kendi tarifini seç. Tarif yoksa "Tarifsiz"i seçip kalori ve proteini doğrudan yaz.</p>'}`);
  const sup=panel('Whey, kreatin, ara öğün','',`
   <div class="fieldrow"><span class="fl">Whey</span><div class="seg">${[0,1,2,3].map(n=>`<button class="${(+d.whey||0)===n?'on':''}" data-whey="${n}">${n}</button>`).join('')}</div><span class="hint">ölçek · 1 ölçek ${S.wheyP} g protein</span></div>
   <label class="chk"><input type="checkbox" data-f="kreatin" ${d.kreatin?'checked':''}> Kreatin aldım (3–5 g)</label>
@@ -704,7 +717,7 @@ Notlar: ${notes.join(' | ')||'—'}`;}
 let q='',onlyFav=false,showHidden=false,tagF='';
 function vTarifler(){const tags=[...new Set(RECIPES.map(r=>r.t))];
  const list=RECIPES.filter(r=>(showHidden||!st.hidden.includes(r.id))&&(!onlyFav||st.favs.includes(r.id))&&(!tagF||r.t===tagF)&&(r.n+' '+r.t).toLocaleLowerCase('tr').includes(q.toLocaleLowerCase('tr')));
- return `<div class="toolbar"><input id="q" type="search" placeholder="Tarif ara: yulaf, ton, pancake…" value="${h(q)}" aria-label="Tarif ara">
+ return `${customPanel()}<div class="toolbar"><input id="q" type="search" placeholder="Tarif ara: yulaf, ton, pancake…" value="${h(q)}" aria-label="Tarif ara">
   <div class="seg">${['',...tags].map(t=>`<button class="${tagF===t?'on':''}" data-tag="${h(t)}">${t||'Tümü'}</button>`).join('')}</div>
   <label class="chk"><input type="checkbox" id="onlyFav" ${onlyFav?'checked':''}> Favoriler</label><label class="chk"><input type="checkbox" id="showHidden" ${showHidden?'checked':''}> Gizlenenler</label></div>
  <p class="hint">${list.length} tarif. Hepsi 880–1030 kcal ve 60–83 g protein. Favoriler öneride daha sık çıkar, gizlenenler hiç çıkmaz.</p>
@@ -737,7 +750,7 @@ function todoItems(s){const d=st.days[s]||{};const gymDay=DAY_PROGRAM[parse(s).g
  const gymDone=!!wo&&Object.values(wo.ex||{}).some(a=>a.some(x=>+x[0]>0&&+x[1]>0));
  const moved=gymDone||(d.move&&d.move!=='Dinlenme'&&+d.moveMin>0);
  const p=dayTotals(st,s).p;
- return [['Kilo',+d.w>0],['Kahvaltı',!!d.bf?.rid],['Whey ×2',(+d.whey||0)>=2],['Kreatin',!!d.kreatin],['Akşam yemeği',!!d.din?.mode],
+ return [['Kilo',+d.w>0],['Kahvaltı',bfDone(d.bf)],['Whey ×2',(+d.whey||0)>=2],['Kreatin',!!d.kreatin],['Akşam yemeği',!!d.din?.mode],
   [gymDay?'Antrenman':'Hareket',gymDay?gymDone:moved],['Uyku',+d.sleep>0],['Protein hedefi',p>=st.settings.protein*0.9]];}
 function dayComplete(s){return todoItems(s).every(x=>x[1]);}
 function streak(){const today=iso(new Date());let s=dayComplete(today)?today:addDays(today,-1);let n=0;
@@ -794,7 +807,7 @@ function abPanel(){if(!AB.supported)return '<p class="note warn">Bu tarayıcı o
 // ===== REHBER =====
 function vRehber(){return `<div class="cols">${panel('Her gün: 5 dakikalık rutin','sırayla','<div class="guide"><ol>'+
  '<li><span class="k">Sabah 05:00, tuvaletten sonra (30 sn).</span> Tartıl ve <b>Bugün</b> ekranındaki büyük kilo kutusuna yaz. Aynı ekranda dün geceki <b>uyku</b> saatini gir.</li>'+
- '<li><span class="k">Kahvaltı (1 dk).</span> "Bugünün önerisi"ni yapabilir ya da Tarifler\'den istediğini seçebilirsin. Malzemeleri tarifte yazan gramlarla tart. Yaptıktan sonra <b>Bunu yaptım</b>\'a bas veya listeden seç; kalori ve protein kendiliğinden eklenir. <b>Kreatin</b> kutusunu işaretle.</li>'+
+ '<li><span class="k">Kahvaltı (1 dk).</span> "Bugünün önerisi"ni yapabilir ya da Tarifler\'den istediğini seçebilirsin. Malzemeleri tarifte yazan gramlarla tart. Yaptıktan sonra <b>Bunu yaptım</b>\'a bas veya listeden seç; kalori ve protein kendiliğinden eklenir. Kendi yaptığın bir şeyse listeden <b>Tarifsiz</b>\'i seçip kalori ve proteini yaz; istersen <b>Kendi tariflerime kaydet</b> ile sonraki sefer için sakla. <b>Kreatin</b> kutusunu işaretle.</li>'+
  '<li><span class="k">Gün içinde.</span> Her whey içtiğinde <b>Whey</b> sayısını artır (hedef 2). Ara öğün yaptıysan listeden seç.</li>'+
  '<li><span class="k">Gym akşamı (1 dk).</span> Salonda telefonun not uygulamasına <code>Squat 80x8 80x8 80x7</code> gibi yaz. Eve gelince notu <b>Antrenman</b> ekranına yapıştır ve <b>Notu işle</b>\'ye bas.</li>'+
  '<li><span class="k">Akşam yemeği (20 sn).</span> Ne yediğini seç: yemekhane etli, yemekhane sebze, ev yemeği… Tatlı aldıysan kutuyu işaretle.</li>'+
@@ -833,6 +846,41 @@ function vRehber(){return `<div class="cols">${panel('Her gün: 5 dakikalık rut
  '<li><span class="k">Tartıda ani artış:</span> Tuzlu yemek, kreatin başlangıcı veya yoğun antrenman su tutturur. Trende bak, tek güne değil.</li>'+
  '<li><span class="k">Kırmızı alarm:</span> Raporu hemen koçluk sohbetine gönder.</li></ul></div>')}</div>`;}
 
+// ===== KAHVALTI: SEÇENEKLER & ELLE GİRİŞ =====
+function bfOptions(bfv,recOpts){const rid=String(bfv.rid||'');const cs=st.custom||[];
+ return `<option value="">Seç</option><option value="manual" ${bfv.manual?'selected':''}>Tarifsiz: kalori ve proteini kendim yazacağım</option>`+
+ (cs.length?`<optgroup label="Kendi tariflerim">${cs.map(c=>`<option value="${c.id}" ${rid===c.id?'selected':''}>${h(c.n)} (${N(c.k)} kcal, ${N(c.p)} g P)</option>`).join('')}</optgroup>`:'')+
+ `<optgroup label="Hazır tarifler">${recOpts}</optgroup>`;}
+function manualBf(b){return `<div class="fields"><label class="grow">Ne yedim? <span class="opt">(isteğe bağlı)</span><input data-bfm="n" value="${h(b.n)}" placeholder="Örn. 4 yumurta, lor, 2 dilim ekmek"></label></div>
+ <div class="fields"><label>Kalori, kcal<input type="number" inputmode="numeric" data-bfm="k" value="${h(b.k)}" placeholder="0"></label><label>Protein, g<input type="number" inputmode="numeric" data-bfm="p" value="${h(b.p)}" placeholder="0"></label></div>
+ <div class="actions"><button class="btn sm ghost" id="bfSave">Kendi tariflerime kaydet</button><span class="hint">Kaydedersen bir dahaki sefere listeden tek tıkla seçersin.</span></div>`;}
+
+// ===== KENDİ TARİFLERİM =====
+let custEdit=null; // düzenlenen tarifin id'si
+function customPanel(){const cs=st.custom||[];const e=custEdit?cs.find(c=>c.id===custEdit):null;const v=e||{};
+ const form=`<div class="cform"><div class="fields"><label class="grow">Tarifin adı<input id="cN" value="${h(v.n)}" placeholder="Örn. Annemin menemeni + lor"></label></div>
+  <div class="fields four"><label>Kalori, kcal<input id="cK" type="number" value="${h(v.k)}"></label><label>Protein, g<input id="cP" type="number" value="${h(v.p)}"></label>
+  <label>Karb., g <span class="opt">(isteğe bağlı)</span><input id="cC" type="number" value="${h(v.c)}"></label><label>Yağ, g <span class="opt">(isteğe bağlı)</span><input id="cF" type="number" value="${h(v.f)}"></label></div>
+  <label>Malzemeler ve notlar <span class="opt">(isteğe bağlı)</span><textarea id="cNote" rows="2" placeholder="Örn. 4 yumurta, 150 g lor, 2 dilim tam buğday">${h(v.note)}</textarea></label>
+  <div class="actions"><button class="btn" data-cust="save">${e?'Değişiklikleri kaydet':'Tarifi ekle'}</button>${e?'<button class="btn ghost" data-cust="cancel">Vazgeç</button>':''}
+  <span class="hint">Kaloriyi ve proteini paket etiketinden veya bir uygulamadan bulabilirsin; emin değilsen buraya yaz, birlikte hesaplayalım.</span></div></div>`;
+ const list=cs.length?`<ul class="clist">${cs.map(c=>`<li><div><b>${h(c.n)}</b>${c.note?`<span class="hint">${h(c.note)}</span>`:''}</div>
+  <span class="v">${N(c.p)} g P<small>${N(c.k)} kcal</small></span>
+  <div class="actions"><button class="btn sm" data-pick="${c.id}">Bugün bunu yaptım</button><button class="btn sm ghost" data-cust="edit" data-id="${c.id}">Düzenle</button><button class="btn sm ghost" data-cust="del" data-id="${c.id}">Sil</button></div></li>`).join('')}</ul>`
+  :'<p class="hint">Henüz kendi tarifin yok. Aşağıdaki formla ekle ya da Bugün ekranında "Tarifsiz" girdiğin bir kahvaltıyı kaydet.</p>';
+ return panel('Kendi tariflerim',cs.length?`${cs.length} tarif`:'',list+`<h3 class="sub3">${e?'Tarifi düzenle':'Yeni tarif ekle'}</h3>`+form,'mine');}
+function custAction(a,id){const cs=st.custom=st.custom||[];
+ if(a==='edit'){custEdit=id;render();$('#cN').focus();return;}
+ if(a==='cancel'){custEdit=null;render();return;}
+ if(a==='del'){const c=cs.find(x=>x.id===id);if(!c||!confirm(`"${c.n}" silinsin mi? Bu tarifi seçtiğin geçmiş günlerin kalori ve proteini korunur.`))return;
+  for(const d of Object.values(st.days))if(d.bf&&d.bf.rid===id){const m=+d.bf.mult||1;d.bf={manual:true,k:Math.round(c.k*m),p:Math.round(c.p*m),n:c.n};}
+  st.custom=cs.filter(x=>x.id!==id);if(custEdit===id)custEdit=null;save(true);flash('Tarif silindi');render();return;}
+ if(a==='save'){const n=$('#cN').value.trim(),k=+$('#cK').value,p=+$('#cP').value;
+  if(!n){flash('Tarife bir ad ver',true);$('#cN').focus();return;}if(!(k>0)){flash('Kaloriyi gir',true);$('#cK').focus();return;}
+  const v={n,k,p:p||0,c:$('#cC').value===''?'':+$('#cC').value,f:$('#cF').value===''?'':+$('#cF').value,note:$('#cNote').value.trim()};
+  if(custEdit){Object.assign(cs.find(x=>x.id===custEdit),v);flash('Tarif güncellendi');}else{cs.push({id:'c'+Date.now(),...v});flash('Tarif eklendi');}
+  custEdit=null;save(true);render();}}
+
 // ===== OLAYLAR =====
 function bind(){
  document.querySelectorAll('[data-f]').forEach(el=>el.addEventListener('change',()=>{let v=el.type==='checkbox'?el.checked:el.value;if(el.dataset.num!==undefined&&v!=='')v=+v;
@@ -840,7 +888,13 @@ function bind(){
  document.querySelectorAll('[data-menu]').forEach(el=>el.addEventListener('change',()=>{const d=day();d.din=d.din||{};d.din.menu=d.din.menu||['','','',''];d.din.menu[+el.dataset.menu]=el.value;save();render();}));
  document.querySelectorAll('[data-whey]').forEach(b=>b.onclick=()=>{setV('whey',+b.dataset.whey);render();});
  document.querySelectorAll('[data-scale]').forEach(b=>b.onclick=()=>{setV(b.dataset.scale,+b.dataset.v);render();});
- document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{const d=day();d.bf={rid:+b.dataset.pick,mult:d.bf?.mult||1};save();tab='bugun';render();});
+ document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{const d=day();const v=b.dataset.pick;d.bf={rid:v.startsWith('c')?v:+v,mult:(!d.bf?.manual&&d.bf?.mult)||1};save();tab='bugun';render();});
+ document.querySelectorAll('[data-bf]').forEach(el=>el.onchange=()=>{const d=day();const v=el.value;
+  if(!v)delete d.bf;else if(v==='manual')d.bf={manual:true,k:'',p:'',n:''};else d.bf={rid:v.startsWith('c')?v:+v,mult:1};save();render();});
+ document.querySelectorAll('[data-bfm]').forEach(el=>el.addEventListener('change',()=>{const d=day();d.bf=d.bf||{manual:true};const k=el.dataset.bfm;d.bf[k]=k==='n'?el.value:(el.value===''?'':+el.value);save();render();}));
+ const sv=$('#bfSave');if(sv)sv.onclick=()=>{const d=day();const b=d.bf;const n=(b.n||'').trim();if(!n){flash('Kaydetmek için "Ne yedim?" kutusuna bir ad yaz',true);$('[data-bfm=n]').focus();return;}
+  if(!(+b.k>0)){flash('Kaloriyi gir',true);return;}const c={id:'c'+Date.now(),n,k:+b.k,p:+b.p||0,c:'',f:'',note:''};(st.custom=st.custom||[]).push(c);d.bf={rid:c.id,mult:1};save(true);flash('Kendi tariflerine eklendi');render();};
+ document.querySelectorAll('[data-cust]').forEach(el=>el.onclick=()=>custAction(el.dataset.cust,el.dataset.id));
  document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>{toggle(st.favs,+b.dataset.fav);save(true);render();});
  document.querySelectorAll('[data-hide]').forEach(b=>b.onclick=()=>{toggle(st.hidden,+b.dataset.hide);save(true);render();});
  document.querySelectorAll('[data-tag]').forEach(b=>b.onclick=()=>{tagF=b.dataset.tag;render();});
