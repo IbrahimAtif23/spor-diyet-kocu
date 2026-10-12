@@ -1,0 +1,29 @@
+{
+ "name": "Spor & Diyet Koçu",
+ "short_name": "Koç",
+ "description": "120 → 100 kg: günlük kayıt, antrenman defteri ve ilerleme takibi",
+ "lang": "tr",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#14233d",
+ "theme_color": "#14233d",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

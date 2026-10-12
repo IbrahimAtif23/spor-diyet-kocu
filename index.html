@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spor & Diyet Koçu</title>
+<meta name="theme-color" content="#14233d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-latin-ext-600-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-display:swap;src:url(fonts/barlow-condensed-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-display:swap;src:url(fonts/barlow-condensed-latin-ext-700-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Source Sans 3";font-weight:400;font-display:swap;src:url(fonts/source-sans-3-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Source Sans 3";font-weight:400;font-display:swap;src:url(fonts/source-sans-3-latin-ext-400-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Source Sans 3";font-weight:600;font-display:swap;src:url(fonts/source-sans-3-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Source Sans 3";font-weight:600;font-display:swap;src:url(fonts/source-sans-3-latin-ext-600-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+
+/* Renkler: lacivert "skor tabelası", soğuk kâğıt zemin, sinyal mavisi */
+:root{--ink:#14233d;--paper:#eef1f5;--sheet:#fff;--rule:#d6dce5;--mut:#5d6878;--sig:#2a5fe0;--sig-soft:#e3eafb;
+ --good:#1f8a57;--warn:#c27a16;--bad:#c23b2a;--board:#14233d;--board-ink:#f3f6fb;--board-mut:#93a3bd;--seg-off:#2a3c5c;--pro:#6fb3ff;
+ --disp:"Barlow Condensed","Arial Narrow",sans-serif;--body:"Source Sans 3",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--ink:#e4e9f2;--paper:#0d1522;--sheet:#152034;--rule:#26344d;--mut:#94a2b8;--sig:#6c95ff;--sig-soft:#1d2c4a;
+ --good:#4cc488;--warn:#e6a84a;--bad:#f07a68;--board:#09101c;--seg-off:#22324e}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--body)}
+.app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+
+/* Kenar çubuğu */
+.side{background:var(--board);color:var(--board-ink);padding:22px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:22px}
+.brand{font:700 21px/1 var(--disp);letter-spacing:.01em}
+.brand span{display:block;font:600 14px/1.3 var(--body);color:var(--board-mut);margin-top:5px}
+.date{border-top:1px solid var(--seg-off);border-bottom:1px solid var(--seg-off);padding:14px 0}
+.date .d{font:700 64px/0.9 var(--disp);font-variant-numeric:tabular-nums}
+.date .t{font-weight:600;margin-top:4px}
+.date .w{color:var(--board-mut);font-size:14px}
+.dnav{display:flex;gap:6px;margin-top:12px}
+.dnav button{flex:1;background:var(--seg-off);color:var(--board-ink);border:0;border-radius:6px;padding:7px 0;font:600 14px var(--body);cursor:pointer}
+.dnav button:hover{background:#344a70}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{text-align:left;background:none;border:0;color:var(--board-mut);font:600 20px/1 var(--disp);padding:9px 10px;border-radius:6px;cursor:pointer;letter-spacing:.01em}
+.nav button:hover{color:var(--board-ink)}
+.nav button.on{color:var(--board-ink);background:var(--seg-off);box-shadow:inset 3px 0 0 var(--pro)}
+.bk{margin-top:auto;font-size:13px;color:var(--board-mut)}.bk.warn{color:#ffc46b}
+
+main{padding:28px 32px 70px;max-width:1120px;width:100%}
+@media(max-width:900px){.app{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px;padding:14px}
+ .date{border:0;padding:0;display:flex;align-items:center;gap:10px}.date .d{font-size:38px}.dnav{margin:0}.nav{flex-direction:row;overflow-x:auto;width:100%}.nav button{font-size:17px;white-space:nowrap}.bk{display:none}
+ main{padding:18px 14px 60px}}
+
+/* Notlar */
+.notes{display:grid;gap:6px;margin-bottom:16px}
+.note{background:var(--sheet);border:1px solid var(--rule);border-left:4px solid var(--mut);border-radius:6px;padding:9px 14px;font-size:15px}
+.note.gym{border-left-color:var(--sig)}.note.walk{border-left-color:var(--good)}.note.warn{border-left-color:var(--warn)}.note.bad{border-left-color:var(--bad)}
+.link{background:none;border:0;color:var(--sig);font:600 15px var(--body);cursor:pointer;padding:0 0 0 6px;text-decoration:underline;text-underline-offset:3px}
+
+/* Skor tabelası */
+.board{background:var(--board);color:var(--board-ink);border-radius:10px;display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:22px;overflow:hidden}
+.board.four{grid-template-columns:repeat(4,1fr)}
+.stat{padding:18px 22px;border-right:1px solid var(--seg-off);display:block;margin:0}
+.stat:last-child{border-right:0}
+.stat .num{font:700 50px/1 var(--disp);font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:6px}
+.stat .num small{font:600 18px var(--disp);color:var(--board-mut)}
+.stat .lab{font-weight:600;font-size:15px;margin-top:6px;color:var(--board-ink)}
+.stat .sub{font-size:13px;color:var(--board-mut);margin-top:2px}
+.stat.good .num{color:#6fe0a5}.stat.warn .num{color:#ffc46b}.stat.bad .num{color:#ff8f7e}
+.wcell input{font:700 50px/1 var(--disp);color:var(--board-ink);background:transparent;border:0;border-bottom:2px dashed var(--seg-off);width:5ch;padding:0;font-variant-numeric:tabular-nums}
+.wcell input:focus{outline:none;border-bottom-color:var(--pro)}
+.wcell input::placeholder{color:var(--board-mut)}
+@media(max-width:900px){.board,.board.four{grid-template-columns:1fr 1fr}.stat{border-bottom:1px solid var(--seg-off)}.stat .num,.wcell input{font-size:40px}}
+
+/* Plaka göstergesi */
+.meter{display:flex;gap:3px;margin-top:12px}
+.meter i{flex:1;height:14px;border-radius:2px;background:var(--seg-off)}
+.meter i.f{background:#7fa2ff}.meter.pro i.f{background:var(--pro)}.meter.over i.f{background:#ff8f7e}
+
+/* Paneller */
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.cols .wide{grid-column:1/-1}
+@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:16px 18px 18px}
+.panel>header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:12px}
+.panel h2{font:700 24px/1.1 var(--disp);margin:0;letter-spacing:.005em}
+.panel .aside{color:var(--mut);font-size:14px}
+.panel.alarm{border-color:var(--bad)}
+.panel.flush{padding-bottom:4px}
+label{display:block;margin:10px 0;font-size:14px;font-weight:600;color:var(--mut)}
+label>input,label>select,label>textarea{display:block;width:100%;margin-top:4px;font-weight:400}
+input,select,textarea{font:16px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 10px}
+textarea{width:100%;resize:vertical}
+:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0 12px}
+.fields .grow{grid-column:span 2}.fields.four{grid-template-columns:repeat(4,1fr)}
+@media(max-width:520px){.fields.four{grid-template-columns:1fr 1fr}.fields .grow{grid-column:auto}}
+.fieldrow{display:flex;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap}
+.fl{font-size:14px;font-weight:600;color:var(--mut);min-width:52px}
+.chk{display:flex;align-items:center;gap:9px;color:var(--ink);font-weight:400;font-size:15px}.chk input{width:18px;height:18px;margin:0;accent-color:var(--sig)}
+.hint{font-size:14px;color:var(--mut);margin:6px 0}
+.rule{font-size:14px;color:var(--mut);border-top:1px solid var(--rule);padding-top:10px;margin:12px 0 0}
+code{font-size:14px;background:var(--paper);border:1px solid var(--rule);padding:0 5px;border-radius:4px}
+
+/* Düğmeler */
+.btn{display:inline-flex;align-items:center;border:0;background:var(--sig);color:#fff;border-radius:6px;padding:9px 16px;font:600 15px var(--body);cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.sm{padding:5px 11px;font-size:14px}.btn.ghost{background:var(--sig-soft);color:var(--sig)}.btn.danger{background:var(--bad)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--paper);flex-wrap:wrap}
+.seg button{border:0;border-right:1px solid var(--rule);background:none;color:var(--ink);font:600 15px var(--body);padding:6px 13px;cursor:pointer;font-variant-numeric:tabular-nums}
+.seg button:last-child{border-right:0}.seg button.on{background:var(--ink);color:var(--sheet)}
+.seg.ten button{padding:6px 0;width:31px}
+.seg.big button{font:700 20px var(--disp);padding:6px 18px}
+
+/* Kahvaltı */
+.sug{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:var(--sig-soft);border-radius:6px;padding:10px 12px}
+.sug span{font-size:14px;color:var(--mut);width:100%}.sug b{flex:1;min-width:180px}
+.macros{display:flex;flex-wrap:wrap;gap:4px 18px;margin:12px 0 4px;font-size:15px;color:var(--mut)}
+.macros b{font:700 22px var(--disp);color:var(--ink);font-variant-numeric:tabular-nums}.macros .pr b{color:var(--sig)}
+details{margin-top:8px}summary{cursor:pointer;color:var(--sig);font-weight:600;font-size:15px}
+.ing{list-style:none;padding:0;margin:10px 0}
+.ing li{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:4px 0;border-bottom:1px dotted var(--rule);font-size:15px}
+.ing b{font-variant-numeric:tabular-nums}.ing .u{color:var(--mut);font-size:14px;min-width:64px;text-align:right}
+.steps{font-size:15px;max-width:68ch}
+
+/* Antrenman */
+.pick{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}.pick>span:first-child{font:700 22px var(--disp)}
+.cols+.panel,.pick+.panel{margin-bottom:18px}
+.exlist{list-style:none;margin:0;padding:0;counter-reset:ex}
+.ex{border-bottom:1px solid var(--rule);padding:14px 0;counter-increment:ex}
+.ex:last-child{border-bottom:0}
+.exh{display:grid;grid-template-columns:minmax(220px,1fr) minmax(220px,1.2fr);gap:8px 20px}
+@media(max-width:700px){.exh{grid-template-columns:1fr}}
+.ex h3{font:700 22px/1.1 var(--disp);margin:0}
+.ex h3::before{content:counter(ex);color:var(--mut);margin-right:8px;font-weight:600}
+.tgt{font-size:14px;color:var(--mut);margin-top:3px}.tgt b{color:var(--ink);font:700 17px var(--disp);margin-right:6px}
+.adv{font-size:15px}.adv .last{display:block;font-size:13px;color:var(--mut)}.adv.up{color:var(--good);font-weight:600}
+.sets{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.set{display:inline-flex;align-items:center;gap:3px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:3px}
+.set input{width:58px;border:0;background:var(--sheet);padding:6px;text-align:center;font-variant-numeric:tabular-nums}
+.set i{font-style:normal;color:var(--mut)}
+.mech{font-size:15px;color:var(--mut);max-width:72ch;margin:6px 0 0}
+
+/* İlerleme */
+.ch{width:100%;height:auto;display:block}.ch .gl{stroke:var(--rule)}.ch .ax{fill:var(--mut);font:13px var(--body)}
+.ch .tg{fill:none;stroke:var(--warn);stroke-dasharray:6 5;stroke-width:1.6}.ch .tr{fill:none;stroke:var(--sig);stroke-width:3;stroke-linejoin:round}
+.ch .dw{fill:var(--mut);opacity:.5}.ch .end{fill:var(--sig)}.ch .endl{fill:var(--ink);font:700 18px var(--disp)}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:14px;color:var(--mut);margin-top:6px}
+.lg{display:inline-block;width:18px;height:3px;margin-right:6px;vertical-align:middle}.lg.tr{background:var(--sig)}.lg.dw{background:var(--mut);width:7px;height:7px;border-radius:50%;opacity:.6}.lg.tg{background:repeating-linear-gradient(90deg,var(--warn) 0 6px,transparent 6px 10px)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 14px;margin:6px 0}.kv dt{color:var(--mut)}.kv dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.kv dd.hl{color:var(--sig);font:700 22px var(--disp)}
+.checks{list-style:none;padding:0;margin:0}
+.checks li{display:grid;grid-template-columns:24px 1fr auto;gap:8px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:15px;align-items:center}
+.checks .mk{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--sig-soft);color:var(--good)}
+.checks li.on .mk{background:var(--bad);color:#fff}.checks li.on{color:var(--bad);font-weight:600}.checks em{font-style:normal;color:var(--mut);font-size:14px}
+.vol{width:100%;border-collapse:collapse}.vol th{text-align:left;font-weight:400;font-size:15px;padding:6px 10px 6px 0;white-space:nowrap}.vol tr.pri th{font-weight:600}
+.vol td.bar{width:100%}.track{position:relative;display:block;height:10px;background:var(--paper);border-radius:5px}
+.fill{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--rule)}.fill.part{background:var(--warn)}.fill.good{background:var(--good)}
+.band{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--mut)}
+.vol td.v{padding-left:10px;font:700 18px var(--disp);white-space:nowrap;font-variant-numeric:tabular-nums}.vol td.v small{color:var(--mut);font-weight:600;font-size:14px}
+.wl{list-style:none;padding:0;margin:0}.wl li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--rule)}.wl b{font:700 19px var(--disp)}
+#rep{font:14px/1.5 ui-monospace,Consolas,monospace;margin-top:10px}
+
+/* Tarifler */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}.toolbar input[type=search]{flex:1;min-width:240px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin:12px 0 22px}
+.rc{background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column}
+.rc.hid{opacity:.5}
+.rtop{display:flex;align-items:center;gap:8px}
+.rid{font:700 15px var(--disp);color:var(--mut)}
+.tag{font-size:13px;color:var(--mut);border:1px solid var(--rule);border-radius:20px;padding:0 9px}
+.star{margin-left:auto;background:none;border:0;font-size:22px;line-height:1;color:var(--mut);cursor:pointer}.star.on{color:var(--warn)}
+.rc h3{font:700 23px/1.1 var(--disp);margin:8px 0}
+.rp{display:flex;align-items:baseline;gap:6px;color:var(--mut);font-size:15px}.rp .big{font:700 38px/1 var(--disp);color:var(--sig)}.rp .k{margin-left:auto}
+.rc .actions{margin-top:auto;padding-top:10px}
+.snl{list-style:none;padding:0;margin:0}.snl li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule)}
+.snl .hint{display:block;margin:0}.snl .v{font:700 20px var(--disp);text-align:right;white-space:nowrap}.snl .v small{display:block;font:14px var(--body);color:var(--mut)}
+
+/* Kanıt */
+.ev{width:100%;border-collapse:collapse}.ev th,.ev td{text-align:left;padding:9px 10px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top;font-size:15px}.ev th{font-weight:600;white-space:nowrap}
+.gr{font-size:13px;border-radius:20px;padding:1px 9px;white-space:nowrap}.g-h{background:#dff2e7;color:#17663f}.g-m{background:#fbefd9;color:#8a560d}.g-l{background:#f7e0dc;color:#9a2c1e}
+@media (prefers-color-scheme:dark){.g-h{background:#173827;color:#7fe0ab}.g-m{background:#3a2c14;color:#f1c27a}.g-l{background:#3d1d18;color:#ffa194}}
+
+.empty{background:var(--sheet);border:1px dashed var(--rule);border-radius:8px;padding:18px}.empty p{margin:0 0 4px}
+hr{border:0;border-top:1px solid var(--rule);margin:16px 0}
+a{color:var(--sig)}
+.flash{position:fixed;bottom:18px;right:18px;background:var(--ink);color:var(--sheet);padding:8px 16px;border-radius:6px;opacity:0;transform:translateY(6px);transition:opacity .18s,transform .18s;pointer-events:none;font-weight:600}
+.flash.show{opacity:1;transform:none}.flash.bad{background:var(--bad);color:#fff}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<div class="app">
+<aside class="side">
+ <div class="brand">Spor & Diyet Koçu<span>120 → 100 kg</span></div>
+ <div class="date"><div class="d" id="dayNum"></div><div><div class="t" id="dayTxt"></div><div class="w" id="weekLbl"></div></div>
+  <div class="dnav"><button id="prev" aria-label="Önceki gün">Önceki</button><button id="isToday">Bugün</button><button id="next" aria-label="Sonraki gün">Sonraki</button></div></div>
+ <nav class="nav" aria-label="Bölümler"><button data-t="bugun">Bugün</button><button data-t="antrenman">Antrenman</button><button data-t="ilerleme">İlerleme</button><button data-t="tarifler">Tarifler</button><button data-t="kanit">Kanıt</button><button data-t="ayarlar">Ayarlar</button></nav>
+ <div class="bk" id="bk"></div>
+</aside>
+<main id="main"></main></div>
+<div id="flash" class="flash" role="status" aria-live="polite"></div>
+<script>
+const APP_VERSION='1.1.0';
+// ===== BESİN VERİTABANI (100 g başına: kcal, protein, karbonhidrat, yağ) =====
+const FOODS = {
+  yumurta:{n:'Yumurta',k:143,p:12.6,c:0.7,f:9.5,u:55,un:'adet'},
+  ak:{n:'Yumurta akı',k:52,p:10.9,c:0.7,f:0.2,u:33,un:'adet'},
+  lor:{n:'Lor peyniri',k:110,p:12,c:3,f:5},
+  beyaz:{n:'Beyaz peynir (light)',k:175,p:19,c:2,f:10},
+  kasar:{n:'Kaşar (light)',k:260,p:27,c:2,f:16},
+  suzme:{n:'Süzme yoğurt (az yağlı)',k:73,p:10,c:3.9,f:1.9},
+  yogurt:{n:'Yoğurt',k:61,p:3.5,c:4.7,f:3.3},
+  kefir:{n:'Kefir',k:55,p:3.3,c:4.5,f:2.5},
+  sut:{n:'Süt (yarım yağlı)',k:47,p:3.3,c:4.8,f:1.6},
+  yulaf:{n:'Yulaf ezmesi',k:379,p:13,c:66,f:6.5},
+  ekmek:{n:'Tam buğday ekmeği',k:252,p:12,c:43,f:3.5,u:30,un:'dilim'},
+  lavas:{n:'Tam buğday lavaş',k:300,p:9,c:50,f:7,u:60,un:'adet'},
+  hindi:{n:'Hindi füme',k:105,p:18,c:2,f:2.5},
+  tavuk:{n:'Tavuk göğsü (pişmiş)',k:165,p:31,c:0,f:3.6},
+  ton:{n:'Ton balığı (suda, süzülmüş)',k:116,p:26,c:0,f:1},
+  kiyma:{n:'Dana kıyma (az yağlı)',k:176,p:20,c:0,f:10},
+  hsucuk:{n:'Hindi sucuk',k:210,p:17,c:3,f:15},
+  somon:{n:'Füme somon',k:117,p:18,c:0,f:4.3},
+  zyagi:{n:'Zeytinyağı',k:884,p:0,c:0,f:100},
+  tereyag:{n:'Tereyağı',k:717,p:0.9,c:0.1,f:81},
+  domates:{n:'Domates',k:18,p:0.9,c:3.9,f:0.2},
+  salatalik:{n:'Salatalık',k:15,p:0.7,c:3.6,f:0.1},
+  biber:{n:'Yeşil biber',k:20,p:0.9,c:4.6,f:0.2},
+  sogan:{n:'Soğan',k:40,p:1.1,c:9.3,f:0.1},
+  ispanak:{n:'Ispanak',k:23,p:2.9,c:3.6,f:0.4},
+  mantar:{n:'Mantar',k:22,p:3.1,c:3.3,f:0.3},
+  kabak:{n:'Kabak',k:17,p:1.2,c:3.1,f:0.3},
+  zeytin:{n:'Zeytin',k:145,p:1,c:4,f:14},
+  yesillik:{n:'Yeşillik (maydanoz, roka)',k:25,p:2,c:4,f:0.4},
+  muz:{n:'Muz',k:89,p:1.1,c:22.8,f:0.3},
+  elma:{n:'Elma',k:52,p:0.3,c:13.8,f:0.2},
+  portakal:{n:'Portakal',k:47,p:0.9,c:11.8,f:0.1},
+  meyve:{n:'Orman meyvesi / çilek',k:50,p:0.7,c:12,f:0.3},
+  kayisi:{n:'Kuru kayısı',k:241,p:3.4,c:63,f:0.5},
+  hurma:{n:'Hurma',k:282,p:2.5,c:75,f:0.4},
+  ceviz:{n:'Ceviz',k:654,p:15.2,c:13.7,f:65},
+  findik:{n:'Fındık',k:628,p:15,c:17,f:61},
+  fistik:{n:'Fıstık ezmesi',k:588,p:25,c:20,f:50},
+  bal:{n:'Bal',k:304,p:0.3,c:82,f:0},
+  pekmez:{n:'Pekmez',k:290,p:0,c:72,f:0},
+  tahin:{n:'Tahin',k:595,p:17,c:21,f:54},
+  chia:{n:'Chia tohumu',k:486,p:16.5,c:42,f:30.8},
+  kakao:{n:'Kakao (şekersiz)',k:228,p:19.6,c:58,f:13.7},
+  avokado:{n:'Avokado',k:160,p:2,c:8.5,f:14.7},
+  patates:{n:'Patates (çiğ)',k:77,p:2,c:17,f:0.1},
+  nohut:{n:'Nohut (haşlanmış)',k:164,p:8.9,c:27.4,f:2.6},
+  mercimek:{n:'Kırmızı mercimek (pişmiş)',k:116,p:9,c:20,f:0.4},
+  bulgur:{n:'Bulgur pilavı (sade, pişmiş)',k:83,p:3.1,c:18.6,f:0.2}
+};
+
+// ===== 50 KAHVALTI TARİFİ (gramlar çiğ/hazır ağırlık) =====
+// t: tür etiketi, i: [besin, gram], s: hazırlanış
+const RECIPES = [
+ {"id":1,"n":"Klasik Protein Kahvaltı Tabağı","t":"Tabak","i":[["yumurta",220],["lor",150],["ekmek",90],["suzme",200],["domates",150],["salatalik",150],["zyagi",5],["elma",150]],"s":"Yumurtaları 9 dk haşla. Lor ve süzme yoğurdu ayrı kaselere al, sebzeleri doğra, 5 g zeytinyağı gezdir. Ekmek ve elma yanında."},
+ {"id":2,"n":"Sebzeli Omlet + Lor","t":"Yumurta","i":[["yumurta",165],["ak",132],["ispanak",100],["mantar",100],["sogan",50],["zyagi",10],["lor",150],["ekmek",90],["portakal",150]],"s":"Soğan ve mantarı zeytinyağında 4 dk sotele, ıspanağı ekle. Çırpılmış yumurta ve akları dök, kısık ateşte pişir. Lor, ekmek ve portakalla servis et."},
+ {"id":3,"n":"Menemen Tabağı","t":"Yumurta","i":[["yumurta",220],["domates",250],["biber",100],["sogan",50],["zyagi",10],["beyaz",60],["hindi",80],["ekmek",90],["zeytin",30]],"s":"Soğan ve biberi zeytinyağında yumuşat, rendelenmiş domatesi ekleyip suyunu çektir. Yumurtaları kır, hafif karıştır. Yanına beyaz peynir, hindi füme, zeytin ve ekmek."},
+ {"id":4,"n":"Muzlu Yulaf Kasesi + Haşlanmış Yumurta","t":"Yulaf","i":[["yulaf",80],["sut",250],["suzme",250],["muz",120],["ceviz",15],["bal",10],["yumurta",110]],"s":"Yulafı sütle 4–5 dk pişir. Üstüne süzme yoğurt, dilimlenmiş muz, ceviz ve bal. Yanında 2 haşlanmış yumurta. İstersen günün 1 ölçek whey'ini yulafa karıştırabilirsin (whey ayrıca işaretlenir)."},
+ {"id":5,"n":"Protein Pancake","t":"Pancake","i":[["yulaf",80],["yumurta",110],["ak",132],["muz",100],["lor",100],["suzme",200],["meyve",100],["bal",15]],"s":"Yulaf, yumurta, aklar, muz ve loru blenderdan geçir. Yapışmaz tavada küçük pancakeler pişir. Üstüne süzme yoğurt, meyve ve bal."},
+ {"id":6,"n":"Ton Balıklı Sandviç Tabağı","t":"Sandviç","i":[["ekmek",180],["ton",150],["suzme",50],["domates",100],["salatalik",100],["yesillik",30],["yumurta",110],["elma",150]],"s":"Ton balığını süzme yoğurtla ezip karıştır (mayonez yerine). 4 dilim ekmekle domates, salatalık ve yeşillikle sandviç yap. Yanında 2 haşlanmış yumurta ve elma."},
+ {"id":7,"n":"Hindi Fümeli Kahvaltı Dürümü","t":"Dürüm","i":[["lavas",120],["hindi",120],["kasar",40],["yumurta",110],["domates",100],["yesillik",30],["suzme",150],["meyve",100]],"s":"Yumurtaları çırpıp tavada ince omlet yap. Lavaşlara omlet, hindi füme, kaşar, domates ve yeşillik koyup sar, tavada iki yüzünü kızart. Yanında meyveli süzme yoğurt."},
+ {"id":8,"n":"Tavuklu Avokado Tost","t":"Sandviç","i":[["ekmek",120],["tavuk",150],["avokado",60],["yumurta",110],["domates",100],["portakal",150]],"s":"Avokadoyu ezip ekmeklere sür. Üstüne didiklenmiş tavuk ve domates dilimleri. Yanında 2 haşlanmış yumurta ve portakal. Tavuğu haftada bir kez toplu pişirip buzdolabında sakla."},
+ {"id":9,"n":"Ballı Cevizli Lor + Yumurta","t":"Tabak","i":[["lor",250],["bal",20],["ceviz",15],["ekmek",60],["yumurta",165],["domates",150],["salatalik",150],["suzme",100]],"s":"Loru kaseye al, bal ve ceviz ekle. 3 haşlanmış yumurta, sebzeler ve 2 dilim ekmekle servis et."},
+ {"id":10,"n":"Light Çılbır","t":"Yumurta","i":[["yumurta",220],["suzme",250],["tereyag",5],["ekmek",150],["domates",100],["salatalik",100]],"s":"Süzme yoğurdu sarımsakla karıştır. Yumurtaları sirkeli suda 3 dk poşe et, yoğurdun üstüne koy. 5 g tereyağını pul biberle eritip gezdir. Ekmek ve sebzeyle."},
+ {"id":11,"n":"Kıymalı Yumurta","t":"Yumurta","i":[["kiyma",120],["yumurta",165],["sogan",50],["biber",80],["domates",150],["ekmek",90],["yogurt",150],["suzme",100]],"s":"Kıymayı yağ eklemeden kavur, soğan ve biberi ekle. Domatesi ekleyip 3 dk pişir, yumurtaları kır, kapağı kapat. Yanında yoğurt ve ekmek."},
+ {"id":12,"n":"Mantarlı Ispanaklı Frittata + Fırın Patates","t":"Yumurta","i":[["yumurta",220],["ak",99],["mantar",150],["ispanak",150],["kasar",30],["patates",200],["zyagi",10],["suzme",100],["ekmek",30]],"s":"Patatesi küp doğrayıp 5 g yağla 200°C fırında 25 dk pişir. Mantar ve ıspanağı 5 g yağda sotele, çırpılmış yumurta+akları dök, üstüne kaşar, 8–10 dk fırında pişir."},
+ {"id":13,"n":"Patatesli Yumurta + Kefir","t":"Yumurta","i":[["patates",250],["yumurta",220],["sogan",50],["zyagi",10],["beyaz",60],["yesillik",30],["kefir",250],["suzme",100]],"s":"Patatesi ince doğrayıp soğanla zeytinyağında kapağı kapalı pişir. Yumurtaları kır. Üstüne yeşillik, yanında beyaz peynir ve bir bardak kefir."},
+ {"id":14,"n":"Kefirli Gece Yulafı + Yumurta","t":"Yulaf","i":[["yulaf",80],["kefir",300],["suzme",300],["chia",15],["meyve",150],["bal",10],["yumurta",110]],"s":"Akşamdan yulaf, kefir, süzme yoğurt ve chiayı kavanozda karıştır, buzdolabına koy. Sabah meyve ve bal ekle. Yanında 2 haşlanmış yumurta. Hazırlığı en hızlı tarif."},
+ {"id":15,"n":"Füme Somonlu Kahvaltı","t":"Tabak","i":[["somon",100],["yumurta",165],["ekmek",90],["lor",100],["salatalik",150],["domates",100],["yesillik",20],["zyagi",5],["elma",150],["suzme",100]],"s":"3 yumurtayı haşla veya çırp. Ekmeklere lor sür, üstüne füme somon ve yeşillik. Salatalık-domates salatası ve elma."},
+ {"id":16,"n":"Hindi Sucuklu Yumurta","t":"Yumurta","i":[["hsucuk",60],["yumurta",220],["ekmek",120],["domates",150],["salatalik",150],["suzme",200]],"s":"Hindi sucuğu yağsız tavada çevir, yumurtaları üstüne kır. Sebzeler, ekmek ve süzme yoğurtla."},
+ {"id":17,"n":"Nohutlu Şakşuka","t":"Yumurta","i":[["yumurta",220],["nohut",150],["domates",300],["biber",80],["sogan",50],["zyagi",10],["beyaz",40],["ekmek",60],["suzme",100]],"s":"Soğan-biberi kavur, domates ve haşlanmış nohudu ekleyip 8 dk pişir (kimyon, pul biber). Sosa 4 çukur aç, yumurtaları kır, kapağı kapat. Üstüne beyaz peynir ufala."},
+ {"id":18,"n":"Tahin-Pekmez + Yumurta + Lor","t":"Tabak","i":[["ekmek",90],["tahin",15],["pekmez",20],["yumurta",220],["lor",150],["domates",100],["salatalik",100]],"s":"Tahin ve pekmezi karıştırıp ekmeğe sür. 4 haşlanmış yumurta, lor ve sebzelerle."},
+ {"id":19,"n":"Fıstık Ezmeli Yulaf + Yoğurt","t":"Yulaf","i":[["yulaf",80],["sut",250],["fistik",20],["muz",100],["suzme",250],["yumurta",110]],"s":"Yulafı sütle pişir, fıstık ezmesi ve muz ekle. Yanında süzme yoğurt ve 2 haşlanmış yumurta."},
+ {"id":20,"n":"Kakaolu Protein Yulaf","t":"Yulaf","i":[["yulaf",80],["sut",300],["ak",99],["kakao",10],["hurma",20],["muz",100],["suzme",350]],"s":"Yulafı sütle pişirirken yumurta aklarını çırparak ekle (kremamsı olur). Kakao ve doğranmış hurmayı kat. Üstüne muz, yanında süzme yoğurt."},
+ {"id":21,"n":"Tavuklu Sebzeli Omlet","t":"Yumurta","i":[["tavuk",100],["yumurta",165],["biber",80],["mantar",100],["sogan",40],["zyagi",5],["ekmek",120],["yogurt",150]],"s":"Sebzeleri sotele, didiklenmiş tavuğu ekle. Çırpılmış yumurtayı dök, omlet olarak pişir. Ekmek ve yoğurtla."},
+ {"id":22,"n":"Lorlu Ispanaklı Lavaş Gözleme","t":"Dürüm","i":[["lavas",120],["lor",200],["ispanak",100],["yumurta",110],["zyagi",10],["kefir",200],["suzme",100]],"s":"Lor, doğranmış ıspanak ve 1 yumurtayı karıştır. Lavaşlara yayıp katla, kalan yumurtayı üstlerine sür, az yağlı tavada iki yüzünü pişir. Kefirle."},
+ {"id":23,"n":"Ton Balıklı Patates-Yumurta Salatası","t":"Salata","i":[["ton",120],["yumurta",165],["patates",200],["domates",150],["salatalik",150],["sogan",30],["yesillik",30],["zyagi",10],["suzme",100],["ekmek",60]],"s":"Patates ve yumurtaları haşla, doğra. Ton, sebzeler, yeşillik, limon ve zeytinyağıyla karıştır. Yanında süzme yoğurt."},
+ {"id":24,"n":"Fırında Yumurtalı Ekmek (Light French Toast)","t":"Pancake","i":[["ekmek",120],["yumurta",110],["ak",99],["sut",100],["meyve",150],["suzme",300],["bal",10]],"s":"Yumurta, ak ve sütü tarçınla çırp. 4 dilim ekmeği bulayıp yapışmaz tavada veya 200°C fırında pişir. Üstüne süzme yoğurt, meyve ve bal."},
+ {"id":25,"n":"Kaşarlı Mantarlı Tost + Yumurta","t":"Sandviç","i":[["ekmek",180],["kasar",50],["mantar",80],["yumurta",110],["suzme",200],["domates",100]],"s":"Mantarı soteleyip kaşarla 4 dilim ekmek arasında tost yap. Yanında 2 haşlanmış yumurta ve süzme yoğurt."},
+ {"id":26,"n":"Lorlu Pankek (Syrniki)","t":"Pancake","i":[["lor",250],["yumurta",110],["yulaf",60],["meyve",150],["suzme",150],["bal",10],["ekmek",30]],"s":"Lor, yumurta ve öğütülmüş yulafı yoğur. Küçük köfteler yapıp yapışmaz tavada iki yüzünü 3'er dk pişir. Meyveli yoğurt ve balla."},
+ {"id":27,"n":"Bol Sebzeli Lor Salatası + Yumurta","t":"Salata","i":[["lor",200],["yumurta",165],["domates",200],["salatalik",200],["biber",50],["yesillik",40],["zeytin",30],["zyagi",10],["ekmek",60],["suzme",100]],"s":"Sebzeleri doğra, loru ufalayarak ekle, zeytinyağı-limonla karıştır. 3 haşlanmış yumurta, zeytin ve 2 dilim ekmekle."},
+ {"id":28,"n":"Avokadolu Yumurta Tabağı","t":"Tabak","i":[["avokado",80],["yumurta",220],["ekmek",90],["lor",100],["domates",150],["suzme",200]],"s":"Ekmeklere ezilmiş avokado sür, üstüne 4 yumurtayı (haşlanmış veya sahanda yağsız) koy. Lor ve domatesle."},
+ {"id":29,"n":"Muzlu Fıstık Ezmeli Tost + Süt","t":"Sandviç","i":[["ekmek",90],["fistik",20],["muz",100],["sut",300],["yumurta",165],["lor",80],["suzme",100]],"s":"Ekmeklere fıstık ezmesi ve muz dilimleri. Yanında bir büyük bardak süt, 3 haşlanmış yumurta ve lor."},
+ {"id":30,"n":"Kahvaltı Burritosu","t":"Dürüm","i":[["lavas",120],["yumurta",165],["ak",66],["kiyma",80],["biber",60],["domates",100],["kasar",30],["suzme",100]],"s":"Kıymayı kavur, biber-domatesi ekle. Yumurta ve akları çırparak karıştır. Lavaşlara kaşarla doldurup sar. Süzme yoğurtla (sos gibi)."},
+ {"id":31,"n":"Yoğurtlu Meyve Kasesi + Yumurta","t":"Yoğurt","i":[["suzme",400],["meyve",200],["muz",100],["yulaf",40],["ceviz",15],["yumurta",165]],"s":"Süzme yoğurdun üstüne meyve, muz, çiğ yulaf ve ceviz. Yanında 3 haşlanmış yumurta."},
+ {"id":32,"n":"Ispanaklı Yumurta + Bulgur","t":"Yumurta","i":[["bulgur",200],["ispanak",150],["sogan",40],["zyagi",10],["yumurta",220],["yogurt",150],["suzme",300]],"s":"Soğan ve ıspanağı kavur, yumurtaları üstüne kır. Akşamdan kalan veya hazır bulgur pilavı ve yoğurtla."},
+ {"id":33,"n":"Mercimekli Kahvaltı Tavası","t":"Yumurta","i":[["mercimek",200],["domates",150],["sogan",40],["zyagi",10],["yumurta",165],["ekmek",60],["yogurt",150],["suzme",100]],"s":"Haşlanmış kırmızı mercimeği soğan-domatesle kavur (kimyon, pul biber). Üstüne yumurtaları kır, pişir. Yoğurt ve ekmekle."},
+ {"id":34,"n":"Tavuklu Lorlu Sandviç + Kefir","t":"Sandviç","i":[["ekmek",150],["tavuk",150],["lor",80],["domates",100],["yesillik",30],["elma",150],["kefir",200]],"s":"Ekmeklere lor sür, didiklenmiş tavuk, domates ve yeşillikle sandviç yap. Kefir ve elmayla."},
+ {"id":35,"n":"Hindi ve Kaşarlı Omlet","t":"Yumurta","i":[["yumurta",220],["hindi",80],["kasar",30],["mantar",80],["ekmek",150],["domates",150],["salatalik",100]],"s":"Mantarı sotele, çırpılmış yumurtayı dök, hindi füme ve kaşarı ekleyip katla. Ekmek ve sebzeyle."},
+ {"id":36,"n":"Fırın Yumurta Muffinleri + Kefir","t":"Yumurta","i":[["yumurta",220],["ak",99],["ispanak",80],["biber",60],["beyaz",50],["ekmek",120],["kefir",250]],"s":"Yumurta, ak, doğranmış ıspanak, biber ve beyaz peyniri karıştır, muffin kalıbına dök, 180°C'de 20 dk pişir. 2–3 günlük hazırlanabilir. Ekmek ve kefirle."},
+ {"id":37,"n":"Chia Puding + Yumurta","t":"Yoğurt","i":[["chia",30],["sut",300],["suzme",300],["meyve",150],["bal",10],["yumurta",165],["ekmek",30]],"s":"Akşamdan chia ve sütü karıştırıp buzdolabına koy. Sabah süzme yoğurt, meyve ve bal ekle. 3 haşlanmış yumurta ve 1 dilim ekmekle."},
+ {"id":38,"n":"Patates Röşti + Yumurta + Yoğurt","t":"Yumurta","i":[["patates",300],["yumurta",165],["zyagi",10],["suzme",450],["yesillik",20]],"s":"Patatesi rendele, suyunu sık, tuz-karabiberle yassı köfteler yapıp az yağlı tavada çıtırlaştır. Üstüne 3 yumurta (sahanda), yanında sarımsaklı süzme yoğurt."},
+ {"id":39,"n":"Ton Balıklı Dürüm","t":"Dürüm","i":[["lavas",120],["ton",150],["domates",100],["salatalik",100],["yesillik",30],["suzme",80],["yumurta",55],["elma",150],["ekmek",60]],"s":"Ton balığını süzme yoğurtla karıştır, sebzelerle lavaşa sar. Yanında 1 haşlanmış yumurta ve elma."},
+ {"id":40,"n":"Somonlu Avokado Tost","t":"Sandviç","i":[["ekmek",150],["somon",100],["avokado",60],["lor",100],["yumurta",110],["salatalik",100],["suzme",100]],"s":"Ekmeklere avokado ve lor sür, füme somonu koy. Yanında 2 haşlanmış yumurta ve salatalık."},
+ {"id":41,"n":"Sütlü Yulaf + Yumurta + Peynir","t":"Yulaf","i":[["yulaf",80],["sut",300],["bal",10],["yumurta",165],["beyaz",60],["domates",100],["suzme",100]],"s":"Yulafı sütle pişir, bal ekle. Yanında 3 haşlanmış yumurta, beyaz peynir ve domates (tatlı-tuzlu kombin)."},
+ {"id":42,"n":"Kayısılı Yoğurt Kasesi","t":"Yoğurt","i":[["suzme",400],["kayisi",40],["yulaf",50],["findik",15],["yumurta",110],["ekmek",30]],"s":"Süzme yoğurda doğranmış kuru kayısı, yulaf ve fındık ekle. 2 haşlanmış yumurta ve 1 dilim ekmekle."},
+ {"id":43,"n":"Mantarlı Tavuk Tava","t":"Tabak","i":[["tavuk",150],["mantar",150],["biber",80],["sogan",40],["zyagi",10],["ekmek",120],["yogurt",200],["yumurta",55]],"s":"Tavuğu küp doğrayıp mantar, biber ve soğanla zeytinyağında sotele (kekik, karabiber). Yoğurt, ekmek ve 1 yumurtayla."},
+ {"id":44,"n":"Fırın Mücver + Yoğurt","t":"Yumurta","i":[["kabak",300],["yumurta",165],["lor",100],["yulaf",40],["yesillik",30],["zyagi",10],["suzme",300],["ekmek",30]],"s":"Kabağı rendele ve sık. Yumurta, lor, yulaf ve dereotuyla karıştır. Yağlı kağıda kaşıkla dök, 200°C fırında 25 dk. Sarımsaklı yoğurtla."},
+ {"id":45,"n":"Tahin-Pekmezli Yoğurt + Omlet","t":"Yumurta","i":[["suzme",350],["tahin",10],["pekmez",15],["yumurta",165],["ak",66],["ekmek",90],["domates",150]],"s":"Süzme yoğurda tahin ve pekmez gezdir. Yumurta ve aklarla sade omlet yap. Ekmek ve domatesle."},
+ {"id":46,"n":"Orman Meyveli Pancake","t":"Pancake","i":[["yulaf",70],["yumurta",110],["ak",99],["sut",100],["meyve",150],["suzme",300],["bal",10],["ekmek",30]],"s":"Yulaf, yumurta, ak ve sütü blenderdan geçir. Pancake pişir, meyveyi tavada 2 dk ısıtıp sos yap. Süzme yoğurt ve balla."},
+ {"id":47,"n":"Hindi Sucuklu Patates Tava + Kefir","t":"Yumurta","i":[["patates",250],["hsucuk",60],["yumurta",165],["sogan",40],["zyagi",5],["kefir",250],["suzme",200]],"s":"Patatesi küp doğrayıp soğanla az yağda kapağı kapalı pişir, hindi sucuğu ekle. Yumurtaları kır. Kefirle."},
+ {"id":48,"n":"Lavaş Pizza (Kıymalı)","t":"Dürüm","i":[["lavas",120],["kiyma",100],["domates",100],["biber",50],["kasar",30],["yumurta",55],["kefir",200],["suzme",100]],"s":"Kıymayı kavur. Lavaşlara rendelenmiş domates sür, kıyma, biber ve kaşar koy, ortaya yumurta kır. 200°C fırında 8–10 dk. Kefirle."},
+ {"id":49,"n":"Klasik Peynir Tabağı","t":"Tabak","i":[["beyaz",80],["kasar",40],["yumurta",165],["ekmek",90],["domates",150],["salatalik",150],["zeytin",30],["ceviz",15],["suzme",150]],"s":"Geleneksel kahvaltı: beyaz peynir, kaşar, 3 haşlanmış yumurta, zeytin, ceviz, sebzeler ve ekmek. Proteini tamamlamak için süzme yoğurt."},
+ {"id":50,"n":"Lorlu Ispanaklı Yumurta Kapama","t":"Yumurta","i":[["ispanak",200],["lor",150],["yumurta",220],["sogan",40],["zyagi",10],["ekmek",90],["suzme",100]],"s":"Soğan ve ıspanağı kavur, loru ekle. 4 yumurtayı üstüne kırıp kapağı kapalı pişir. Ekmekle."}
+];
+
+// ===== PROTEİN ARA ÖĞÜNLERİ (whey ayrı işaretlenir) =====
+const SNACKS = [
+ {id:'s1',n:'Süzme yoğurt + meyve',i:[['suzme',300],['meyve',100]]},
+ {id:'s2',n:'Ton balığı + salatalık + 1 dilim ekmek',i:[['ton',150],['salatalik',150],['ekmek',30]]},
+ {id:'s3',n:'3 haşlanmış yumurta + lor',i:[['yumurta',165],['lor',100]]},
+ {id:'s4',n:'Ballı lor',i:[['lor',250],['bal',10]]},
+ {id:'s5',n:'Büyük bardak kefir',i:[['kefir',400]]},
+ {id:'s6',n:'Hindi füme + domates + salatalık',i:[['hindi',150],['domates',100],['salatalik',100]]},
+ {id:'s7',n:'Whey\'i sütle iç (süt kısmı)',i:[['sut',300]]},
+ {id:'s8',n:'Whey\'i kefirle iç (kefir kısmı)',i:[['kefir',300]]}
+];
+
+
+// ===== ANTRENMAN PROGRAMI =====
+// m: kas grubu, sets, lo-hi tekrar, rir, rest (dk), comp: bileşik mi, a: not ayrıştırma anahtar kelimeleri
+const PROGRAM = {
+ A:{name:'Antrenman A (Pazartesi)',ex:[
+  {id:'A1',n:'Smith Machine Squat',m:'quad',sets:3,lo:6,hi:8,rir:'2',rest:3,comp:1,a:['squat']},
+  {id:'A2',n:'Smith Incline Bench Press',m:'chest',sets:4,lo:6,hi:8,rir:'2',rest:3,comp:1,a:['incline','eğimli']},
+  {id:'A3',n:'Lat Pulldown (geniş tutuş)',m:'back',sets:3,lo:8,hi:10,rir:'1–2',rest:2,comp:1,a:['pulldown','lat']},
+  {id:'A4',n:'Seated Leg Curl',m:'ham',sets:3,lo:10,hi:12,rir:'1',rest:2,a:['leg curl','seated curl']},
+  {id:'A5',n:'Cable Lateral Raise',m:'sdelt',sets:4,lo:12,hi:15,rir:'1',rest:1.5,a:['lateral','yan omuz']},
+  {id:'A6',n:'Triceps Pushdown',m:'tri',sets:3,lo:10,hi:12,rir:'1',rest:1.5,a:['pushdown','push down','triceps']},
+  {id:'A7',n:'Cable Face Away Curl',m:'bi',sets:3,lo:10,hi:12,rir:'1',rest:1.5,a:['face away','curl','biceps']},
+  {id:'A8',n:'Cable Crunch',m:'abs',sets:3,lo:10,hi:15,rir:'1',rest:1.5,a:['crunch','karın']}]},
+ B:{name:'Antrenman B (Çarşamba)',ex:[
+  {id:'B1',n:'45° Back Extension',m:'ham',sets:3,lo:10,hi:12,rir:'1–2',rest:2,comp:1,a:['back extension','back ext','hiperekstansiyon','hyper']},
+  {id:'B2',n:'Seated Dumbbell Shoulder Press',m:'sdelt',sets:3,lo:8,hi:10,rir:'1–2',rest:2.5,comp:1,a:['shoulder press','omuz press','press']},
+  {id:'B3',n:'Chest Supported Wide Grip Row',m:'back',sets:3,lo:8,hi:10,rir:'1',rest:2,comp:1,a:['row','chest supported','kürek']},
+  {id:'B4',n:'Lat Pulldown (nötr/dar tutuş)',m:'back',sets:3,lo:10,hi:12,rir:'1',rest:2,comp:1,a:['pulldown','lat']},
+  {id:'B5',n:'Pec Deck Fly',m:'chest',sets:3,lo:10,hi:12,rir:'1',rest:1.5,a:['pec deck','pecdeck','fly']},
+  {id:'B6',n:'Reverse Pec Deck',m:'rdelt',sets:3,lo:12,hi:15,rir:'1',rest:1.5,a:['reverse pec deck','reverse','rear delt','arka omuz']},
+  {id:'B7',n:'Dumbbell Lateral Raise',m:'sdelt',sets:4,lo:12,hi:15,rir:'1',rest:1.5,a:['lateral','yan omuz']},
+  {id:'B8',n:'Dumbbell Hammer Curl',m:'bi',sets:3,lo:10,hi:12,rir:'1',rest:1.5,a:['hammer','curl']}]},
+ C:{name:'Antrenman C (Cuma)',ex:[
+  {id:'C1',n:'Leg Press',m:'quad',sets:3,lo:8,hi:10,rir:'2',rest:3,comp:1,a:['leg press']},
+  {id:'C2',n:'Chest Press Machine',m:'chest',sets:3,lo:8,hi:10,rir:'1–2',rest:2.5,comp:1,a:['chest press','göğüs press']},
+  {id:'C3',n:'Seated Cable Row',m:'back',sets:3,lo:8,hi:10,rir:'1',rest:2,comp:1,a:['row','cable row','kürek']},
+  {id:'C4',n:'Leg Extension',m:'quad',sets:3,lo:10,hi:12,rir:'1',rest:1.5,a:['leg extension','leg ext']},
+  {id:'C5',n:'Lying Leg Curl',m:'ham',sets:3,lo:10,hi:12,rir:'1',rest:1.5,a:['leg curl','lying']},
+  {id:'C6',n:'Cable Overhead Extension',m:'tri',sets:3,lo:10,hi:12,rir:'1',rest:1.5,a:['overhead','triceps']},
+  {id:'C7',n:'Smith Calf Raise (süperset ↓)',m:'calf',sets:4,lo:10,hi:15,rir:'1',rest:1,a:['calf','baldır']},
+  {id:'C8',n:'Cable Lateral Raise (süperset ↑)',m:'sdelt',sets:4,lo:12,hi:15,rir:'1',rest:1.5,a:['lateral','yan omuz']},
+  {id:'C9',n:'Cable Crunch',m:'abs',sets:3,lo:10,hi:15,rir:'1',rest:1.5,a:['crunch','karın']}]}
+};
+const DAY_PROGRAM = {1:'A',3:'B',5:'C'}; // getDay(): 1=Pzt 3=Çar 5=Cum
+
+const MUSCLES = {
+ back:{n:'Sırt (lat + row)',lo:12,hi:16,pri:1}, sdelt:{n:'Yan omuz',lo:12,hi:16,pri:1}, chest:{n:'Göğüs (üst öncelikli)',lo:10,hi:14,pri:1},
+ quad:{n:'Ön bacak',lo:9,hi:12}, ham:{n:'Arka bacak + kalça',lo:9,hi:12}, rdelt:{n:'Arka omuz',lo:3,hi:6},
+ bi:{n:'Biceps',lo:6,hi:9}, tri:{n:'Triceps',lo:6,hi:9}, calf:{n:'Baldır',lo:4,hi:6}, abs:{n:'Karın',lo:6,hi:9}
+};
+
+const MECH = {
+ 'Smith Machine Squat':'Hedef: ön bacak, kalça. Ayaklar barın biraz önünde, omuz genişliğinde. Diz parmak ucu yönünde, kalçayı paralel veya biraz altına indir. Gövde dik kalır, belini yuvarlama.',
+ 'Smith Incline Bench Press':'Hedef: üst göğüs, ön omuz. Sehpa 30°. Bar köprücük kemiğinin hemen altına iner, dirsekler gövdeyle ~45–60°. Altta göğüs gerilir; o noktada sektirmeden kontrollü dön.',
+ 'Lat Pulldown (geniş tutuş)':'Hedef: lat (sırt genişliği). Göğsü kaldır, barı üst göğse çek; dirsekleri aşağı-arkaya sürmeyi düşün. Yukarıda kolları tam uzat: lat burada gerilir.',
+ 'Lat Pulldown (nötr/dar tutuş)':'Hedef: lat, alt sırt kısmı. Nötr tutuşla dirsekleri kalçaya doğru çek. Tam uzama + tam kasılma; gövdeyi geriye savurma.',
+ 'Seated Leg Curl':'Hedef: hamstring. Oturarak curl, hamstringi kalçada gerili pozisyonda çalıştırdığı için yatarak versiyondan avantajlı kabul edilir. Pedi bileğin hemen üstüne ayarla, negatifi 2–3 sn kontrol et.',
+ 'Cable Lateral Raise':'Hedef: yan omuz (omuz genişliği). Kablo arkadan geçer, kol hafif bükük. Dirsek önde, eli dışa doğru omuz hizasına kaldır. Kablo, dambılın aksine altta da gerilim verir.',
+ 'Triceps Pushdown':'Hedef: triceps (lateral baş). Dirsekler gövdeye sabit; sadece ön kol hareket eder. Altta tam kilitle, yukarıda ön kolu üst kola yaklaştır.',
+ 'Cable Face Away Curl':'Hedef: biceps (uzun baş). Kabloya sırtını dön, kol gövdenin gerisinde başlar: biceps gerilmiş pozisyonda yüklenir. Dirseği öne kaydırma.',
+ 'Cable Crunch':'Hedef: rectus abdominis. Diz çök, ipi başın yanında tut. Kalçayla değil, omurgayı yuvarlayarak (göğsü kalçaya) in. Kolla çekme.',
+ '45° Back Extension':'Hedef: hamstring, kalça, bel. Pedi kalça kemiğinin altına ayarla ki kalçadan menteşe yapabilesin. Sırt nötr, kalçadan bük; üstte belini aşırı geriye atma. Ağırlık için göğse plaka tut.',
+ 'Seated Dumbbell Shoulder Press':'Hedef: ön ve yan omuz, triceps. Sırt dik, dambıllar kulak hizasına iner, dirsekler hafif önde. Üstte dambılları çarpıştırma.',
+ 'Chest Supported Wide Grip Row':'Hedef: üst sırt, arka omuz, lat. Göğüs pede yaslı; bel yükü yok. Geniş tutuşta dirsekler dışa açılır (üst sırt). Kürek kemiklerini sıkıştır, öne gerilerek uzat.',
+ 'Pec Deck Fly':'Hedef: göğüs. Kollar hafif bükük, kolları omuz hizasının biraz altında tut. Açılırken göğüs gerilir; bu kısmı yavaş yap. Önde birleşince 1 sn sık.',
+ 'Reverse Pec Deck':'Hedef: arka omuz. Makineye yüzün dönük otur, kolları yanlara açarken kürek kemiklerini çok sıkıştırma: hareket omuzdan gelsin. Hafif ağırlık, yüksek tekrar.',
+ 'Dumbbell Lateral Raise':'Hedef: yan omuz. Hafif öne eğil, dirsek önde, dambılı yana-yukarı omuz hizasına kaldır. Savurmadan, negatif 2 sn. Takım elbise omzunun ana hareketi.',
+ 'Dumbbell Hammer Curl':'Hedef: brachialis, brachioradialis (kol kalınlığı). Avuçlar birbirine bakar, dirsek sabit. Kol kalınlığını yandan artırır.',
+ 'Leg Press':'Hedef: ön bacak, kalça. Ayaklar platformun ortasında, omuz genişliğinde. Dizler göğse yaklaşana kadar in ama bel pedden kalkmasın. Üstte dizi kilitleme.',
+ 'Chest Press Machine':'Hedef: göğüs, ön omuz, triceps. Tutamaklar orta göğüs hizasında. Geri gelirken göğüs gerilir; kontrollü dön. Kürek kemikleri sırtta sabit.',
+ 'Seated Cable Row':'Hedef: orta sırt, lat. Gövde dik, sapı göbeğe çek, kürek kemiklerini birleştir. Öne uzanırken sırt gerilir; gövdeyi savurma.',
+ 'Leg Extension':'Hedef: quadriceps (özellikle rectus femoris). Koltuk arkasını biraz geriye yatırmak rectus femorisi gerilmiş pozisyonda çalıştırır. Üstte 1 sn sık.',
+ 'Lying Leg Curl':'Hedef: hamstring. Kalçayı pedden kaldırma. Topuğu kalçaya çek, 2–3 sn kontrollü indir.',
+ 'Cable Overhead Extension':'Hedef: triceps uzun başı (kolun en büyük kısmı). Kol baş üstünde olduğu için uzun baş gerilmiş pozisyonda yüklenir. Dirsekler sabit, tam aç.',
+ 'Smith Calf Raise (süperset ↓)':'Hedef: baldır. Ayak ucu bir basamakta, topuk aşağıda tam gerilir (1 sn bekle), sonra parmak ucunda yüksel. Altta sektirme.',
+ 'Cable Lateral Raise (süperset ↑)':'Baldır setinin hemen ardından yapılır, sonra dinlen. Teknik: Cable Lateral Raise ile aynı.'
+};
+
+const EVIDENCE = [
+ ['1. Haftalık hacim','Öncelikli kaslar (sırt, yan omuz, göğüs) 12–16, diğerleri 6–12 zor set/hafta.','Yüksek/Orta'],
+ ['2. Frekans','Her kas haftada 2–3 kez; 3 günlük tüm vücut.','Yüksek'],
+ ['3. RiR','Bileşik 1–3 RiR, izolasyon 0–1 RiR; ağır bileşikte tükenme yok.','Orta–Yüksek'],
+ ['4. Hareket açıklığı','Tam açıklık; kası gerilmiş pozisyonda yükleyen varyasyonlar öncelikli.','Orta/Düşük'],
+ ['5. Dinlenme','İzolasyon 1,5–2 dk, bileşik 2–3 dk.','Orta'],
+ ['6. İlerleme / deload','Çift ilerleme; 6 haftada bir deload haftası.','Düşük–Orta'],
+ ['7. Hareket günleri','4 gün yürüyüş/hafif tempo; ağırlıkla aynı gün ≥3 saat ara.','Orta'],
+ ['8. Kilo verme hızı','Haftada vücut ağırlığının %0,5–0,8\'i; %1 üstü alarm.','Orta–Yüksek'],
+ ['9. Protein','Günde ~200 g; ana öğünde ≥40 g; 2 ölçek whey.','Yüksek'],
+ ['10. Makro oranı','Karbonhidrat/yağ oranı kilo kaybında belirleyici değil; kalori ve protein önce.','Yüksek'],
+ ['11. Diyet molası','8–10 haftada bir 1 hafta bakım kalorisi (10., 20., 30. haftalar).','Orta'],
+ ['12. Glisemik indeks','Kilo kaybında fark yaratmıyor; takip edilmiyor.','Yüksek'],
+ ['13. Tokluk','En büyük protein öğünü kahvaltı; önce protein ve sebze.','Orta'],
+ ['14. Whey + kreatin','Kreatin 3–5 g/gün; ilk haftalarda tartı 1–2 kg su ile artabilir.','Yüksek'],
+ ['15. Uyku','En az 7 saat (22:00–05:00).','Orta'],
+ ['16. Kilo trendi','Günlük tartı; karar sadece trende göre.','Orta'],
+ ['17. Adaptif kalori','Bakım = ort. kalori − trend değişimi × 7700; 2 haftada bir güncelle.','Orta'],
+ ['18. Ölçüm','Kilo trendi + haftalık bel + 2 haftada bir fotoğraf; BIA yok.','Orta–Yüksek'],
+ ['19. Kas koruma alarmı','4 tetikleyiciden 2\'si → kalori +150–250 veya mola.','Düşük']
+];
+const DOC_URL = 'https://claude.ai/code/artifact/738daaf9-d9ca-4415-83b7-b67c0a0c13ea';
+
+const DINNERS = {
+ ym_et:{n:'Yemekhane – etli/tavuklu ana yemek',k:850,p:38},
+ ym_sebze:{n:'Yemekhane – sebze/baklagil ana yemek',k:750,p:22},
+ ev_et:{n:'Ev yemeği – etli/tavuklu, normal tabak',k:850,p:40},
+ ev_sebze:{n:'Ev yemeği – sebze/baklagil, normal tabak',k:700,p:20},
+ yok:{n:'Akşam yemeği yok',k:0,p:0}
+};
+
+const DEFAULT_SETTINGS = {
+ start:'2026-10-12', startWeight:120, goalWeight:100, totalWeeks:34,
+ kcal:2500, protein:200, maint:3350, molaWeeks:[10,20,30], deloadEvery:6,
+ wheyK:120, wheyP:24, ewma:0.1
+};
+
+// ===== TARİH =====
+function iso(d){const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10);}
+function parse(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function addDays(s,n){const d=parse(s);d.setDate(d.getDate()+n);return iso(d);}
+function diffDays(a,b){return Math.round((parse(b)-parse(a))/86400000);}
+function weekNo(S,s){return Math.floor(diffDays(S.start,s)/7)+1;}
+const GUN=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+function isMola(S,s){return S.molaWeeks.includes(weekNo(S,s));}
+function isDeload(S,s){const w=weekNo(S,s);return w>0 && w%S.deloadEvery===0 && !isMola(S,s);}
+
+// ===== BESİN HESABI =====
+function macros(items,mult=1){let t={k:0,p:0,c:0,f:0};for(const [key,g] of items){const f=FOODS[key];if(!f)continue;for(const x of ['k','p','c','f'])t[x]+=f[x]*g*mult/100;}return t;}
+function recipeById(id){return RECIPES.find(r=>r.id==id);}
+function suggestRecipe(st,s){const pool=RECIPES.filter(r=>!st.hidden.includes(r.id));if(!pool.length)return RECIPES[0];
+ const fav=pool.filter(r=>st.favs.includes(r.id));const n=diffDays('2026-01-01',s);
+ if(fav.length && n%2===0) return fav[(n/2)%fav.length];return pool[n%pool.length];}
+
+function dayTotals(st,s){const d=st.days[s];let k=0,p=0;if(!d)return {k,p,logged:false};
+ let logged=false;
+ if(d.bf&&d.bf.rid){const r=recipeById(d.bf.rid);if(r){const m=macros(r.i,d.bf.mult||1);k+=m.k;p+=m.p;logged=true;}}
+ const w=+d.whey||0;k+=w*st.settings.wheyK;p+=w*st.settings.wheyP;
+ if(d.snack){const sn=SNACKS.find(x=>x.id===d.snack);if(sn){const m=macros(sn.i);k+=m.k;p+=m.p;}}
+ if(d.din&&d.din.mode){ if(d.din.mode==='ozel'){k+=+d.din.k||0;p+=+d.din.p||0;}
+   else{const base=DINNERS[d.din.mode];let dk=base.k,dp=base.p;
+    const menu=(d.din.menu||[]).map(Number).filter(x=>x>0);if(menu.length)dk=menu.reduce((a,b)=>a+b,0);
+    if(d.din.tatli){dk+=300;dp+=4;} if(d.din.ikinci){dk+=Math.round(dk*0.4);dp+=Math.round(dp*0.4);}
+    k+=dk;p+=dp;}}
+ k+=+(d.ek_k||0);p+=+(d.ek_p||0);
+ const full=!!(d.bf&&d.bf.rid)&&!!(d.din&&d.din.mode);
+ return {k:Math.round(k),p:Math.round(p),logged:full};}
+
+// ===== TREND =====
+function trendSeries(st){const S=st.settings;const keys=Object.keys(st.days).filter(k=>+st.days[k].w>0).sort();
+ if(!keys.length)return [];const out=[];let t=null;const first=keys[0];const last=keys[keys.length-1];
+ for(let s=first;s<=last;s=addDays(s,1)){const d=st.days[s];const w=d&&+d.w>0?+d.w:null;
+  if(w!==null){t=t===null?w:t+S.ewma*(w-t);} out.push({s,w,t:+t.toFixed(2)});}
+ return out;}
+function trendAt(ts,s){for(let i=ts.length-1;i>=0;i--)if(ts[i].s<=s)return ts[i].t;return null;}
+function targetWeight(S,s){const days=diffDays(S.start,s);if(days<0)return S.startWeight;
+ const dietWeeks=S.totalWeeks-S.molaWeeks.filter(w=>w<=S.totalWeeks).length;const perWeek=(S.startWeight-S.goalWeight)/dietWeeks;
+ let w=S.startWeight;const full=Math.floor(days/7);for(let i=1;i<=full;i++){if(!S.molaWeeks.includes(i))w-=perWeek;}
+ const frac=(days%7)/7;if(!S.molaWeeks.includes(full+1))w-=perWeek*frac;return Math.max(S.goalWeight,+w.toFixed(2));}
+function weeklyRate(ts,s,span=7){if(!ts.length||ts[0].s>addDays(s,-span))return null;const a=trendAt(ts,addDays(s,-span)),b=trendAt(ts,s);if(a==null||b==null)return null;
+ return +(((a-b)/a)*100*7/span).toFixed(2);}
+
+// ===== ADAPTİF KALORİ =====
+function adaptive(st,s){const ts=trendSeries(st);const days=[];for(let i=0;i<21;i++){const d=addDays(s,-i);const t=dayTotals(st,d);if(t.logged)days.push(t.k);}
+ if(days.length<10)return {ok:false,n:days.length};
+ const a=trendAt(ts,addDays(s,-20)),b=trendAt(ts,s);if(a==null||b==null)return {ok:false,n:days.length};
+ const avgK=days.reduce((x,y)=>x+y,0)/days.length;const tdee=avgK+(a-b)*7700/20;
+ const deficit=0.0065*b*7700/7;const target=Math.round((tdee-deficit)/50)*50;
+ return {ok:true,n:days.length,avgK:Math.round(avgK),tdee:Math.round(tdee),target:Math.max(2100,target)};}
+
+// ===== ANTRENMAN ANALİZİ =====
+function e1rm(w,r){return w*(1+r/30);}
+function sessionsOf(st,exName){const out=[];for(const s of Object.keys(st.workouts).sort()){const wo=st.workouts[s];
+  for(const [id,sets] of Object.entries(wo.ex||{})){const ex=findEx(id);if(ex&&ex.n===exName){const v=sets.filter(x=>+x[0]>0&&+x[1]>0);if(v.length)out.push({s,sets:v,best:Math.max(...v.map(x=>e1rm(+x[0],+x[1])))});}}}
+ return out;}
+function findEx(id){for(const k in PROGRAM){const e=PROGRAM[k].ex.find(x=>x.id===id);if(e)return e;}return null;}
+function suggestion(st,ex,beforeDate){const ss=sessionsOf(st,ex.n).filter(x=>x.s<beforeDate);if(!ss.length)return {txt:'İlk kayıt: hedef RiR\'e göre bir ağırlık seç.',last:null};
+ const last=ss[ss.length-1];const ws=last.sets.map(x=>+x[0]);const top=Math.max(...ws);
+ const allTop=last.sets.length>=ex.sets && last.sets.every(x=>+x[1]>=ex.hi);
+ const inc=ex.comp?2.5:1.25;
+ const lastTxt=last.sets.map(x=>`${+x[0]}×${+x[1]}`).join(' ');
+ if(allTop)return {txt:`↑ Ağırlığı artır: ${+(top+inc).toFixed(2)} kg ile ${ex.lo} tekrardan başla.`,last:lastTxt,up:true};
+ return {txt:`→ ${top} kg ile kal, toplam tekrarı artırmaya çalış (hedef: tüm setler ${ex.hi}).`,last:lastTxt};}
+
+function weekVolume(st,s){const mon=addDays(s,-((parse(s).getDay()+6)%7));const vol={};for(const k in MUSCLES)vol[k]=0;
+ for(let i=0;i<7;i++){const d=addDays(mon,i);const wo=st.workouts[d];if(!wo)continue;
+  for(const [id,sets] of Object.entries(wo.ex||{})){const ex=findEx(id);if(!ex)continue;vol[ex.m]+=sets.filter(x=>+x[0]>0&&+x[1]>0).length;}}
+ return {mon,vol};}
+function plannedVolume(){const v={};for(const k in MUSCLES)v[k]=0;for(const p of Object.values(PROGRAM))for(const e of p.ex)v[e.m]+=e.sets;return v;}
+
+// ===== NOT AYRIŞTIRMA: "Squat 80x8 80x8 80x7" =====
+function parseNote(text,dayKey){const prog=PROGRAM[dayKey];const res={},unknown=[];
+ for(const raw of text.split(/\n+/)){const line=raw.toLowerCase().replace(/,/g,'.').trim();if(!line)continue;
+  let best=null,bl=0;for(const e of prog.ex)for(const a of e.a){if(line.includes(a)&&a.length>bl){best=e;bl=a.length;}}
+  const sets=[];const re=/(\d+(?:\.\d+)?)\s*(?:kg)?\s*[x×*]\s*(\d+)(?:\s*[x×*]\s*(\d+))?/g;let m;
+  while((m=re.exec(line))){const n=m[3]?+m[3]:1;for(let i=0;i<n;i++)sets.push([+m[1],+m[2]]);}
+  if(best&&sets.length)res[best.id]=(res[best.id]||[]).concat(sets);else unknown.push(raw.trim());}
+ return {res,unknown};}
+
+// ===== KAS KORUMA ALARMI =====
+function alarms(st,s){const ts=trendSeries(st);const out=[];
+ const a=trendAt(ts,addDays(s,-21)),b=trendAt(ts,s);let r21=null;if(a!=null&&b!=null&&ts[0].s<=addDays(s,-21))r21=((a-b)/a)*100/3;
+ out.push({n:'3 haftalık kayıp hızı %1/hafta üstü',on:r21!=null&&r21>1,v:r21==null?'veri yok':`%${r21.toFixed(2)}/hafta`});
+ let dec=0;const names=[];for(const p of Object.values(PROGRAM))for(const e of p.ex)if(e.comp){const ss=sessionsOf(st,e.n).filter(x=>x.s<=s);
+  if(ss.length>=4){const l=ss.slice(-2),prev=Math.max(...ss.slice(-5,-2).map(x=>x.best));if(l.every(x=>x.best<prev*0.98)){dec++;names.push(e.n);}}}
+ out.push({n:'2 ana harekette 2 seans üst üste kuvvet düşüşü',on:dec>=2,v:dec?names.join(', '):'düşüş yok'});
+ const sl=[];for(let i=0;i<7;i++){const d=st.days[addDays(s,-i)];if(d&&+d.sleep>0)sl.push(+d.sleep);}
+ const as=sl.length?sl.reduce((x,y)=>x+y,0)/sl.length:null;out.push({n:'Haftalık ortalama uyku 7 saatin altında',on:as!=null&&sl.length>=4&&as<7,v:as==null?'veri yok':`${as.toFixed(1)} sa`});
+ const en=[];for(let i=0;i<14;i++){const d=st.days[addDays(s,-i)];if(d&&+d.energy>0)en.push(+d.energy);}
+ const ae=en.length?en.reduce((x,y)=>x+y,0)/en.length:null;out.push({n:'2 haftalık ortalama enerji ≤ 4',on:ae!=null&&en.length>=7&&ae<=4,v:ae==null?'veri yok':ae.toFixed(1)});
+ return {list:out,count:out.filter(x=>x.on).length};}
+
+
+// ===== DURUM & KAYIT =====
+const KEY='sporDiyetKoc_v1';
+let st;
+function load(){try{st=JSON.parse(localStorage.getItem(KEY));}catch(e){st=null;}
+ if(!st)st={settings:{...DEFAULT_SETTINGS},days:{},workouts:{},favs:[],hidden:[]};
+ st.settings={...DEFAULT_SETTINGS,...st.settings};st.days=st.days||{};st.workouts=st.workouts||{};st.favs=st.favs||[];st.hidden=st.hidden||[];}
+function save(quiet){try{st._saved=Date.now();localStorage.setItem(KEY,JSON.stringify(st));if(!quiet)flash('Kaydedildi');}catch(e){flash('Kaydedilemedi: tarayıcı depolaması dolu veya kapalı',true);}}
+let cur=iso(new Date());let tab='bugun';
+const $=s=>document.querySelector(s);
+const h=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const N=(v,d=0)=>v==null||isNaN(v)?'–':(+v).toLocaleString('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const AY=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+function day(s=cur){return st.days[s]||(st.days[s]={});}
+function flash(t,bad){const f=$('#flash');f.textContent=t;f.className='flash show'+(bad?' bad':'');clearTimeout(flash.t);flash.t=setTimeout(()=>f.className='flash',1400);}
+function fmtDate(s){const d=parse(s);return `${d.getDate()} ${AY[d.getMonth()].slice(0,3)} ${GUN[d.getDay()]}`;}
+function setV(path,val){const parts=path.split('.');let o=day();for(let i=0;i<parts.length-1;i++)o=o[parts[i]]||(o[parts[i]]={});o[parts[parts.length-1]]=val;save();}
+function w2(S){return weekNo(S,cur)%2===0;}
+function targetK(){const S=st.settings;return isMola(S,cur)?S.maint:S.kcal;}
+
+// ===== BİLEŞENLER =====
+// Plaka göstergesi: 10 dilim, her biri hedefin %10'u
+function meter(v,max,kind=''){const n=Math.max(0,Math.min(12,Math.round(v/max*10)));let s='';
+ for(let i=0;i<10;i++)s+=`<i class="${i<n?'f':''}"></i>`;return `<span class="meter ${kind} ${v>max*1.04?'over':''}" role="img" aria-label="%${Math.round(v/max*100)}">${s}</span>`;}
+function panel(title,aside,body,cls=''){return `<section class="panel ${cls}"><header><h2>${title}</h2>${aside?`<span class="aside">${aside}</span>`:''}</header>${body}</section>`;}
+function stat(label,value,unit,sub,cls=''){return `<div class="stat ${cls}"><div class="num">${value}${unit?`<small>${unit}</small>`:''}</div><div class="lab">${label}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`;}
+function macroLine(m){return `<div class="macros"><span><b>${N(m.k)}</b> kcal</span><span class="pr"><b>${N(m.p)}</b> g protein</span><span><b>${N(m.c)}</b> g karb.</span><span><b>${N(m.f)}</b> g yağ</span></div>`;}
+
+// ===== ÇERÇEVE =====
+function render(){const S=st.settings;const w=weekNo(S,cur);const d=parse(cur);
+ $('#dayNum').textContent=d.getDate();$('#dayTxt').textContent=`${AY[d.getMonth()]}, ${GUN[d.getDay()]}`;
+ $('#weekLbl').textContent=w>0?`Hafta ${w} / ${S.totalWeeks}`:'Program henüz başlamadı';
+ $('#isToday').hidden=cur===iso(new Date());
+ document.querySelectorAll('.nav button').forEach(b=>{b.classList.toggle('on',b.dataset.t===tab);b.setAttribute('aria-current',b.dataset.t===tab?'page':'false');});
+ const v={bugun:vBugun,antrenman:vAntrenman,ilerleme:vIlerleme,tarifler:vTarifler,kanit:vKanit,ayarlar:vAyarlar}[tab];
+ $('#main').innerHTML=v();bind();backupNag();}
+function backupNag(){const last=st._backup||0;const days=Math.floor((Date.now()-last)/864e5);const el=$('#bk');
+ el.textContent=last?`Son yedek ${days} gün önce`:'Henüz yedek alınmadı';el.className='bk '+(!last||days>7?'warn':'');}
+function notes(){const S=st.settings;const d=parse(cur);const out=[];const pk=DAY_PROGRAM[d.getDay()];
+ if(pk)out.push(`<div class="note gym"><b>Gym günü.</b> ${PROGRAM[pk].name.replace(/ \(.*\)/,'')}: ${PROGRAM[pk].ex.length} hareket. <button class="link" data-go="antrenman">Antrenmanı aç</button></div>`);
+ else out.push(`<div class="note walk"><b>Hareket günü.</b> 30–45 dk yürüyüş veya hafif tempo.</div>`);
+ if(isMola(S,cur))out.push(`<div class="note warn"><b>Diyet molası haftası.</b> Bakım kalorisinde ye (~${N(S.maint)} kcal), protein aynı kalsın.</div>`);
+ if(isDeload(S,cur))out.push(`<div class="note warn"><b>Deload haftası.</b> Setleri yarıya indir, RiR 3 ve üstü.</div>`);
+ if(d.getDay()===0)out.push(`<div class="note info"><b>Pazar check-in.</b> Bel ölçüsünü gir, İlerleme'den haftalık raporu kopyalayıp koçluk sohbetine yapıştır.${w2(S)?' Bu hafta fotoğraf günü: ön, yan, arka.':''}</div>`);
+ return `<div class="notes">${out.join('')}</div>`;}
+
+// ===== BUGÜN =====
+function vBugun(){const S=st.settings;const d=day();const t=dayTotals(st,cur);const tk=targetK();
+ const sug=suggestRecipe(st,cur);const rid=d.bf?.rid||'';const r=rid?RECIPES.find(x=>x.id==rid):null;
+ const rm=r?macros(r.i,d.bf.mult||1):null;const din=d.din||{};const menu=din.menu||['','','',''];
+ const ts=trendSeries(st);const tr=trendAt(ts,cur);
+ const recOpts=RECIPES.filter(x=>!st.hidden.includes(x.id)||x.id==rid).map(x=>{const m=macros(x.i);return `<option value="${x.id}" ${x.id==rid?'selected':''}>${x.id}. ${h(x.n)} (${N(m.k)} kcal, ${N(m.p)} g P)</option>`;}).join('');
+ const board=`<div class="board">
+  <label class="stat wcell"><div class="num"><input type="number" step="0.1" inputmode="decimal" data-f="w" value="${h(d.w)}" placeholder="—" aria-label="Sabah kilosu"><small>kg</small></div><div class="lab">Sabah kilosu, aç karnına</div><div class="sub">${tr!=null?`Trend ${N(tr,1)} kg · hedef çizgisi ${N(targetWeight(S,cur),1)} kg`:'Her sabah aynı tartıda'}</div></label>
+  <div class="stat"><div class="num">${N(t.k)}<small>/ ${N(tk)} kcal</small></div><div class="lab">Kalori</div>${meter(t.k,tk)}</div>
+  <div class="stat"><div class="num">${N(t.p)}<small>/ ${N(S.protein)} g</small></div><div class="lab">Protein</div>${meter(t.p,S.protein,'pro')}</div></div>`;
+ const bf=panel('Kahvaltı','gramla tart',`
+  <div class="sug"><span>Bugünün önerisi</span><b>${sug.id}. ${h(sug.n)}</b><button class="btn sm" data-pick="${sug.id}">Bunu yaptım</button></div>
+  <div class="fields"><label class="grow">Yaptığım tarif<select data-f="bf.rid" data-num><option value="">Tarif seç</option>${recOpts}</select></label>
+  <label>Porsiyon<select data-f="bf.mult" data-num>${[0.75,1,1.25].map(m=>`<option ${((d.bf?.mult||1)==m)?'selected':''} value="${m}">${m===1?'Tarif kadar':'× '+N(m,2)}</option>`).join('')}</select></label></div>
+  ${rm?macroLine(rm)+`<details><summary>Malzemeler ve hazırlanış</summary>${recipeBody(r,d.bf.mult||1)}</details>`:'<p class="hint">Tarif seçince kalori ve protein günlüğe otomatik eklenir.</p>'}`);
+ const sup=panel('Whey, kreatin, ara öğün','',`
+  <div class="fieldrow"><span class="fl">Whey</span><div class="seg">${[0,1,2,3].map(n=>`<button class="${(+d.whey||0)===n?'on':''}" data-whey="${n}">${n}</button>`).join('')}</div><span class="hint">ölçek · 1 ölçek ${S.wheyP} g protein</span></div>
+  <label class="chk"><input type="checkbox" data-f="kreatin" ${d.kreatin?'checked':''}> Kreatin aldım (3–5 g)</label>
+  <label>Protein ara öğünü<select data-f="snack"><option value="">Yok</option>${SNACKS.map(x=>{const m=macros(x.i);return `<option value="${x.id}" ${d.snack===x.id?'selected':''}>${h(x.n)} (${N(m.k)} kcal, ${N(m.p)} g P)</option>`;}).join('')}</select></label>
+  <div class="fields"><label>Ekstra kcal<input type="number" data-f="ek_k" value="${h(d.ek_k)}" placeholder="0"></label><label>Ekstra protein, g<input type="number" data-f="ek_p" value="${h(d.ek_p)}" placeholder="0"></label></div>`);
+ const dn=panel('Akşam yemeği','',`
+  <label>Ne yedim?<select data-f="din.mode"><option value="">Seç</option>${Object.entries(DINNERS).map(([k,v])=>`<option value="${k}" ${din.mode===k?'selected':''}>${v.n}${v.k?` (~${N(v.k)} kcal, ${v.p} g P)`:''}</option>`).join('')}<option value="ozel" ${din.mode==='ozel'?'selected':''}>Kendim gireceğim</option></select></label>
+  ${din.mode==='ozel'?`<div class="fields"><label>kcal<input type="number" data-f="din.k" value="${h(din.k)}"></label><label>Protein, g<input type="number" data-f="din.p" value="${h(din.p)}"></label></div>`:''}
+  ${din.mode&&din.mode.startsWith('ym')?`<p class="hint">İstersen menüdeki kcal değerlerini gir; girersen hazır tahmin yerine bunlar kullanılır.</p>
+   <div class="fields four">${menu.map((m,i)=>`<label>${['Çorba','Ana yemek','Yan yemek','4. seçim'][i]}<input type="number" data-menu="${i}" value="${h(m)}" placeholder="kcal"></label>`).join('')}</div>`:''}
+  ${din.mode&&din.mode!=='ozel'&&din.mode!=='yok'?`<label class="chk"><input type="checkbox" data-f="din.tatli" ${din.tatli?'checked':''}> Tatlı aldım (+300 kcal)</label><label class="chk"><input type="checkbox" data-f="din.ikinci" ${din.ikinci?'checked':''}> Büyük tabak veya ikinci porsiyon (+%40)</label>`:''}
+  <p class="rule">Önce protein ve sebze, sonra karbonhidrat. Etli ana yemeği seç; yan yemekte bulgur, pilav, makarna, börek sırasıyla tercih et.</p>`);
+ const mv=panel('Hareket, uyku, his','',`
+  <div class="fields"><label>Hareket<select data-f="move"><option value="">Seç</option>${['Yürüyüş','Hafif tempo koşu','Gym','Dinlenme'].map(x=>`<option ${d.move===x?'selected':''}>${x}</option>`).join('')}</select></label><label>Süre, dk<input type="number" data-f="moveMin" value="${h(d.moveMin)}"></label></div>
+  <div class="fields"><label>Uyku, saat<input type="number" step="0.25" data-f="sleep" value="${h(d.sleep)}" placeholder="7"></label><label>Bel, cm (Pazar)<input type="number" step="0.5" data-f="waist" value="${h(d.waist)}"></label></div>
+  <div class="fieldrow"><span class="fl">Açlık</span>${scale('hunger',d.hunger)}</div>
+  <div class="fieldrow"><span class="fl">Enerji</span>${scale('energy',d.energy)}</div>
+  ${parse(cur).getDay()===0&&w2(st.settings)?`<label class="chk"><input type="checkbox" data-f="photo" ${d.photo?'checked':''}> Fotoğrafları çektim</label>`:''}
+  <label>Not<textarea data-f="note" rows="2" placeholder="Bugün dikkat çeken bir şey var mı?">${h(d.note)}</textarea></label>`);
+ return `${notes()}${board}<div class="cols">${bf}${sup}${dn}${mv}</div>`;}
+function scale(f,v){let s='';for(let i=1;i<=10;i++)s+=`<button class="${+v===i?'on':''}" data-scale="${f}" data-v="${i}" aria-label="${i}">${i}</button>`;return `<div class="seg ten">${s}</div>`;}
+function recipeBody(r,mult=1){return `<ul class="ing">${r.i.map(([k,g])=>{const f=FOODS[k];const gg=Math.round(g*mult);const u=f.u?` <span class="u">${N(gg/f.u,1)} ${f.un}</span>`:'';return `<li><span>${h(f.n)}</span><b>${gg} g</b>${u}</li>`;}).join('')}</ul><p class="steps">${h(r.s)}</p><p class="hint">Hazırlanışta geçmeyen süzme yoğurt veya ekmek, tabağın yanında tüketilir.</p>`;}
+
+// ===== ANTRENMAN =====
+function vAntrenman(){const S=st.settings;const wd=parse(cur).getDay();const wo=st.workouts[cur]||{};
+ const key=wo.day??DAY_PROGRAM[wd]??'';const dl=isDeload(S,cur);
+ let html=`<div class="notes">${dl?'<div class="note warn"><b>Deload haftası.</b> Her harekette setleri yarıya indir, RiR 3 ve üstü.</div>':''}</div>
+ <div class="pick"><span>Seans</span><div class="seg big">${['A','B','C'].map(k=>`<button class="${key===k?'on':''}" data-day="${k}">${k}</button>`).join('')}<button class="${!key?'on':''}" data-day="">Yok</button></div>
+ ${key&&!DAY_PROGRAM[wd]?'<span class="hint">Programda bugün gym yok; bu telafi seansı olarak kaydedilir.</span>':'<span class="hint">Pazartesi A, Çarşamba B, Cuma C</span>'}</div>`;
+ if(!key)return html+`<div class="empty"><p>Bugün gym günü değil.</p><p class="hint">Kaçırdığın bir seansı bugüne almak için yukarıdan A, B veya C'yi seç.</p></div>`;
+ const p=PROGRAM[key];
+ html+=panel('Telefondaki notu yapıştır','her satıra bir hareket',`<p class="hint">Hareket adı ve ağırlık×tekrar yeterli. Örnek: <code>Squat 80x8 80x8 80x7</code>. Aynı setleri tekrarlamak için: <code>leg curl 40x12x3</code></p>
+ <textarea id="raw" rows="4" placeholder="Squat 80x8 80x8 80x7&#10;incline 60x8x4&#10;pulldown 55x10 55x9 55x9">${h(wo.raw||'')}</textarea>
+ <div class="actions"><button class="btn" id="parseBtn">Notu işle</button><span id="parseMsg" class="hint"></span></div>`);
+ html+=`<section class="panel flush"><header><h2>${h(p.name.replace(/ \(.*\)/,''))}</h2><span class="aside">${p.ex.reduce((a,e)=>a+(dl?Math.ceil(e.sets/2):e.sets),0)} set</span></header><ol class="exlist">`;
+ for(const e of p.ex){const sets=(wo.ex||{})[e.id]||[];const ns=dl?Math.ceil(e.sets/2):e.sets;const sg=suggestion(st,e,cur);
+  let cells='';for(let i=0;i<Math.max(ns,sets.length);i++){const s=sets[i]||['',''];cells+=`<span class="set"><input type="number" step="0.25" inputmode="decimal" data-ex="${e.id}" data-i="${i}" data-k="0" value="${h(s[0])}" placeholder="kg" aria-label="${h(e.n)} set ${i+1} kg"><i>×</i><input type="number" inputmode="numeric" data-ex="${e.id}" data-i="${i}" data-k="1" value="${h(s[1])}" placeholder="tk" aria-label="${h(e.n)} set ${i+1} tekrar"></span>`;}
+  html+=`<li class="ex"><div class="exh"><div><h3>${h(e.n)}</h3><div class="tgt"><b>${ns} × ${e.lo}–${e.hi}</b> RiR ${dl?'3+':e.rir} · dinlenme ${N(e.rest,1)} dk</div></div>
+   <div class="adv ${sg.up?'up':''}">${sg.last?`<span class="last">Geçen seans ${h(sg.last)}</span>`:''}<span>${h(sg.txt)}</span></div></div>
+   <div class="sets">${cells}<button class="btn sm ghost" data-addset="${e.id}">Set ekle</button></div>
+   <details><summary>Nasıl yapılır</summary><p class="mech">${h(MECH[e.n]||'')}</p></details></li>`;}
+ return html+`</ol></section>`;}
+
+// ===== İLERLEME =====
+function vIlerleme(){const S=st.settings;const ts=trendSeries(st);const lastT=trendAt(ts,cur);const rate=weeklyRate(ts,cur);
+ const tw=targetWeight(S,cur);const ad=adaptive(st,cur);const al=alarms(st,cur);const wv=weekVolume(st,cur);
+ const band=rate==null?'':rate>1?'bad':rate>=0.5&&rate<=0.8?'good':'warn';
+ const gap=lastT!=null?lastT-tw:null;
+ const waist=Object.keys(st.days).filter(k=>+st.days[k].waist>0).sort().slice(-8);
+ const board=`<div class="board four">${stat('Trend kilo',N(lastT,1),'kg',lastT!=null?`Hedef çizgisi ${N(tw,1)} kg`:'Kilo girdikçe oluşur')}
+  ${stat('Hedef çizgisine göre',gap==null?'–':(gap>0?'+':'')+N(gap,1),'kg',gap==null?'':gap>0?'Çizginin üstündesin':'Çizginin altındasın',gap==null?'':gap>0.8?'warn':'good')}
+  ${stat('Haftalık hız',rate==null?'–':'%'+N(rate,2),'',`Hedef %0,5–0,8`,band)}
+  ${stat('Kalan',lastT!=null?N(lastT-S.goalWeight,1):'–','kg',`${S.goalWeight} kg hedefine`)}</div>`;
+ const chartP=panel('Kilo trendi','günlük tartı, trend ve hedef çizgisi',chart(ts),'wide');
+ const adP=panel('Adaptif kalori','2 haftada bir uygula',ad.ok?`<dl class="kv"><dt>Son 21 günde tam kayıt</dt><dd>${ad.n} gün</dd><dt>Ortalama alınan</dt><dd>${N(ad.avgK)} kcal</dd><dt>Tahmini bakım kalorin</dt><dd>${N(ad.tdee)} kcal</dd><dt>Haftada %0,65 için hedef</dt><dd class="hl">${N(ad.target)} kcal</dd></dl>
+  <div class="actions"><button class="btn" id="applyK" data-k="${ad.target}" data-m="${ad.tdee}">Hedefi ${N(ad.target)} kcal yap</button><span class="hint">Şu anki hedef ${N(S.kcal)} kcal</span></div>`
+  :`<p>Hesap için son 21 günde en az 10 tam kayıt gerekiyor: kahvaltı, akşam yemeği ve kilo.</p><dl class="kv"><dt>Şu ana kadar</dt><dd>${ad.n} gün</dd><dt>Geçerli hedef</dt><dd>${N(S.kcal)} kcal</dd></dl>`);
+ const alP=panel('Kas koruma alarmı',al.count>=2?'aktif':'',`<ul class="checks">${al.list.map(x=>`<li class="${x.on?'on':''}"><span class="mk" aria-hidden="true">${x.on?'!':'✓'}</span><span>${h(x.n)}</span><em>${h(x.v)}</em></li>`).join('')}</ul>
+  ${al.count>=2?'<div class="note bad"><b>İki veya daha fazla tetikleyici aktif.</b> Kaloriyi 150–250 artır ya da 1 haftalık diyet molası ver; koçluk sohbetine yaz.</div>':'<p class="hint">İki tetikleyici birlikte yanarsa uyarır.</p>'}`,al.count>=2?'alarm':'');
+ const volP=panel('Bu haftanın hacmi',`${fmtDate(wv.mon)} haftası, set`,`<table class="vol">${Object.entries(MUSCLES).map(([k,m])=>{const v=wv.vol[k];const pct=Math.min(100,v/m.hi*100);const c=v>=m.lo?'good':v>0?'part':'';
+  return `<tr class="${m.pri?'pri':''}"><th>${h(m.n)}</th><td class="bar"><span class="track"><span class="fill ${c}" style="width:${pct}%"></span><span class="band" style="left:${m.lo/m.hi*100}%"></span></span></td><td class="v">${v}<small>/${m.lo}–${m.hi}</small></td></tr>`;}).join('')}</table><p class="hint">Kalın yazılı satırlar öncelikli kaslar: sırt, yan omuz, göğüs.</p>`);
+ const wP=panel('Bel ölçüsü','Pazar sabahı, göbek hizası',waist.length?`<ol class="wl">${waist.map(k=>`<li><span>${fmtDate(k)}</span><b>${N(st.days[k].waist,1)} cm</b></li>`).join('')}</ol>`:'<p class="hint">Pazar sabahları göbek hizasından ölç ve Bugün ekranına gir.</p>');
+ const rP=panel('Haftalık check-in raporu','Pazar günü',`<p class="hint">Raporu oluşturup koçluk sohbetine yapıştır; tüm haftanın özeti tek metinde.</p><div class="actions"><button class="btn" id="repBtn">Raporu kopyala</button></div><textarea id="rep" rows="11" readonly placeholder="Rapor burada görünecek"></textarea>`,'wide');
+ return `${board}<div class="cols">${chartP}${adP}${alP}${volP}${wP}${rP}</div>`;}
+function chart(ts){if(ts.length<2)return '<div class="empty"><p>Grafik için en az iki günlük kilo girişi gerekiyor.</p></div>';const S=st.settings;
+ const end=ts[ts.length-1].s;const startD=ts[0].s;const n=diffDays(startD,end)+1;const W=820,H=260,P=40,B=26;
+ const tws=[];for(let i=0;i<n;i++)tws.push(targetWeight(S,addDays(startD,i)));
+ const vals=ts.flatMap(x=>[x.w,x.t]).filter(x=>x!=null).concat(tws);const mn=Math.floor(Math.min(...vals)-0.5),mx=Math.ceil(Math.max(...vals)+0.5);
+ const X=i=>P+(W-P-12)*i/Math.max(1,n-1),Y=v=>12+(H-12-B)*(mx-v)/(mx-mn);
+ const line=arr=>arr.map((v,i)=>v==null?'':`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).filter(Boolean).join(' ');
+ const step=Math.max(1,Math.round((mx-mn)/5));let g='';for(let v=mn;v<=mx;v+=step){g+=`<line x1="${P}" x2="${W-12}" y1="${Y(v)}" y2="${Y(v)}" class="gl"/><text x="${P-8}" y="${Y(v)+4}" class="ax" text-anchor="end">${v}</text>`;}
+ const dots=ts.map((x,i)=>x.w!=null?`<circle cx="${X(i).toFixed(1)}" cy="${Y(x.w).toFixed(1)}" r="2.6" class="dw"><title>${fmtDate(x.s)}: ${N(x.w,1)} kg</title></circle>`:'').join('');
+ const lt=ts[ts.length-1];
+ return `<svg viewBox="0 0 ${W} ${H}" class="ch" role="img" aria-label="Kilo trendi grafiği">${g}<polyline points="${line(tws)}" class="tg"/>${dots}<polyline points="${line(ts.map(x=>x.t))}" class="tr"/>
+ <circle cx="${X(n-1)}" cy="${Y(lt.t)}" r="4.5" class="end"/><text x="${X(n-1)-8}" y="${Y(lt.t)-10}" class="endl" text-anchor="end">${N(lt.t,1)}</text>
+ <text x="${P}" y="${H-6}" class="ax">${fmtDate(startD)}</text><text x="${W-12}" y="${H-6}" class="ax" text-anchor="end">${fmtDate(end)}</text></svg>
+ <div class="legend"><span><i class="lg tr"></i>Trend</span><span><i class="lg dw"></i>Günlük tartı</span><span><i class="lg tg"></i>Hedef çizgisi, ${S.startWeight} → ${S.goalWeight} kg</span></div>`;}
+function report(){const S=st.settings;const ts=trendSeries(st);const days=[];for(let i=6;i>=0;i--)days.push(addDays(cur,-i));
+ const avg=a=>a.length?(a.reduce((x,y)=>x+y,0)/a.length):null;const f=(v,d=1)=>v==null?'—':v.toFixed(d);
+ const ws=days.map(s=>+st.days[s]?.w).filter(x=>x>0);const tot=days.map(s=>dayTotals(st,s)).filter(x=>x.logged);
+ const gyms=days.filter(s=>st.workouts[s]&&Object.keys(st.workouts[s].ex||{}).length).map(s=>`${GUN[parse(s).getDay()]} (${st.workouts[s].day})`);
+ const moves=days.filter(s=>st.days[s]?.move&&st.days[s].move!=='Dinlenme').length;
+ const g=k=>avg(days.map(s=>+st.days[s]?.[k]).filter(x=>x>0));const wv=weekVolume(st,cur);const al=alarms(st,cur);
+ const waist=days.map(s=>st.days[s]?.waist).filter(x=>+x>0).pop();
+ const lifts=[];for(const p of Object.values(PROGRAM))for(const e of p.ex)if(e.comp){const ss=sessionsOf(st,e.n).filter(x=>days.includes(x.s));ss.forEach(x=>lifts.push(`${e.n}: ${x.sets.map(y=>`${+y[0]}×${+y[1]}`).join(' ')}`));}
+ const notes=days.map(s=>st.days[s]?.note?`${GUN[parse(s).getDay()]}: ${st.days[s].note}`:'').filter(Boolean);
+ return `HAFTALIK CHECK-IN — Hafta ${weekNo(S,cur)} (${fmtDate(days[0])} – ${fmtDate(cur)})
+Kilo ort.: ${f(avg(ws))} kg (${ws.length} tartı) · Trend: ${trendAt(ts,cur)??'—'} kg · Haftalık hız: %${weeklyRate(ts,cur)??'—'} · Hedef çizgisi: ${targetWeight(S,cur)} kg
+Bel: ${waist??'—'} cm
+Kalori ort.: ${f(avg(tot.map(x=>x.k)),0)} kcal (hedef ${targetK()}) · Protein ort.: ${f(avg(tot.map(x=>x.p)),0)} g · Tam kayıtlı gün: ${tot.length}/7
+Gym: ${gyms.join(', ')||'yok'} · Hareket günü: ${moves}/7
+Uyku ort.: ${f(g('sleep'))} sa · Açlık: ${f(g('hunger'))}/10 · Enerji: ${f(g('energy'))}/10
+Hacim (set): ${Object.entries(MUSCLES).map(([k,m])=>`${m.n.replace(/ \(.*\)/,'')} ${wv.vol[k]}`).join(', ')}
+Ana hareketler:
+${lifts.join('\n')||'—'}
+Alarm: ${al.count} tetikleyici aktif${al.count?': '+al.list.filter(x=>x.on).map(x=>x.n).join('; '):''}
+Notlar: ${notes.join(' | ')||'—'}`;}
+
+// ===== TARİFLER =====
+let q='',onlyFav=false,showHidden=false,tagF='';
+function vTarifler(){const tags=[...new Set(RECIPES.map(r=>r.t))];
+ const list=RECIPES.filter(r=>(showHidden||!st.hidden.includes(r.id))&&(!onlyFav||st.favs.includes(r.id))&&(!tagF||r.t===tagF)&&(r.n+' '+r.t).toLocaleLowerCase('tr').includes(q.toLocaleLowerCase('tr')));
+ return `<div class="toolbar"><input id="q" type="search" placeholder="Tarif ara: yulaf, ton, pancake…" value="${h(q)}" aria-label="Tarif ara">
+  <div class="seg">${['',...tags].map(t=>`<button class="${tagF===t?'on':''}" data-tag="${h(t)}">${t||'Tümü'}</button>`).join('')}</div>
+  <label class="chk"><input type="checkbox" id="onlyFav" ${onlyFav?'checked':''}> Favoriler</label><label class="chk"><input type="checkbox" id="showHidden" ${showHidden?'checked':''}> Gizlenenler</label></div>
+ <p class="hint">${list.length} tarif. Hepsi 880–1030 kcal ve 60–83 g protein. Favoriler öneride daha sık çıkar, gizlenenler hiç çıkmaz.</p>
+ <div class="rgrid">${list.map(r=>{const m=macros(r.i);const fav=st.favs.includes(r.id),hid=st.hidden.includes(r.id);
+  return `<article class="rc ${hid?'hid':''}"><div class="rtop"><span class="rid">${r.id}</span><span class="tag">${h(r.t)}</span><button class="star ${fav?'on':''}" data-fav="${r.id}" aria-label="${fav?'Favoriden çıkar':'Favorilere ekle'}">${fav?'★':'☆'}</button></div>
+  <h3>${h(r.n)}</h3><div class="rp"><span class="big">${N(m.p)}</span><span>g protein</span><span class="k">${N(m.k)} kcal</span></div>
+  <details><summary>Malzemeler ve hazırlanış</summary>${recipeBody(r)}</details>
+  <div class="actions"><button class="btn sm" data-pick="${r.id}">Bugün bunu yaptım</button><button class="btn sm ghost" data-hide="${r.id}">${hid?'Geri getir':'Gizle'}</button></div></article>`;}).join('')||'<div class="empty"><p>Bu filtreyle tarif yok.</p></div>'}</div>
+ ${panel('Protein ara öğünleri','whey ayrıca işaretlenir',`<ul class="snl">${SNACKS.map(s=>{const m=macros(s.i);return `<li><div><b>${h(s.n)}</b><span class="hint">${s.i.map(([k,g])=>`${FOODS[k].n} ${g} g`).join(', ')}</span></div><span class="v">${N(m.p)} g P<small>${N(m.k)} kcal</small></span></li>`;}).join('')}</ul>`)}`;}
+
+// ===== KANIT =====
+function vKanit(){return panel('Uygulamanın dayandığı kurallar','19 kanıt kartı',`<p>Her kuralın kaynakları ve gerekçesi Kanıt Kartları dokümanında. <a href="${DOC_URL}" target="_blank" rel="noopener">Dokümanı aç</a></p>
+ <table class="ev">${EVIDENCE.map(e=>`<tr><th>${h(e[0])}</th><td>${h(e[1])}</td><td><span class="gr g-${/Yüksek/.test(e[2])&&!/Düşük/.test(e[2])?'h':/Düşük/.test(e[2])?'l':'m'}">${h(e[2])}</span></td></tr>`).join('')}</table>`,'wide');}
+
+// ===== AYARLAR =====
+function vAyarlar(){const S=st.settings;const f=(k,l,step=1)=>`<label>${l}<input type="number" step="${step}" data-s="${k}" value="${h(S[k])}"></label>`;
+ return `<div class="cols">${panel('Hedefler','',`<div class="fields">${f('kcal','Günlük kalori hedefi',50)}${f('protein','Günlük protein, g')}</div><div class="fields">${f('maint','Bakım kalorisi (mola haftaları)',50)}${f('totalWeeks','Toplam süre, hafta')}</div>
+ <div class="fields">${f('startWeight','Başlangıç kilosu',0.1)}${f('goalWeight','Hedef kilo',0.1)}</div>
+ <div class="fields"><label>Başlangıç tarihi<input type="date" data-s="start" value="${S.start}"></label>${f('deloadEvery','Deload sıklığı, hafta')}</div>
+ <label>Diyet molası haftaları<input data-s="molaWeeks" value="${S.molaWeeks.join(', ')}"></label>
+ <div class="fields">${f('wheyK','1 ölçek whey, kcal')}${f('wheyP','1 ölçek whey, protein g')}</div>`)}
+ ${panel('Yedekleme','haftada bir',`<p>Veriler yalnızca bu bilgisayarda, bu tarayıcıda saklanır. Tarayıcı verilerini temizlersen silinirler; bu yüzden haftada bir yedek indir.</p>
+ <div class="actions"><button class="btn" id="exp">Yedeği indir</button><label class="btn ghost">Yedekten geri yükle<input type="file" id="imp" accept=".json,application/json" hidden></label></div>
+ <dl class="kv"><dt>Son kayıt</dt><dd>${st._saved?new Date(st._saved).toLocaleString('tr-TR'):'–'}</dd><dt>Son yedek</dt><dd>${st._backup?new Date(st._backup).toLocaleString('tr-TR'):'Henüz yok'}</dd><dt>Sürüm</dt><dd>${APP_VERSION}</dd></dl>
+ <hr><button class="btn danger" id="reset">Tüm verileri sil</button>`)}</div>`;}
+
+// ===== OLAYLAR =====
+function bind(){
+ document.querySelectorAll('[data-f]').forEach(el=>el.addEventListener('change',()=>{let v=el.type==='checkbox'?el.checked:el.value;if(el.dataset.num!==undefined&&v!=='')v=+v;
+   setV(el.dataset.f,v);if(el.dataset.f==='bf.rid'&&v&&!day().bf.mult)day().bf.mult=1;render();}));
+ document.querySelectorAll('[data-menu]').forEach(el=>el.addEventListener('change',()=>{const d=day();d.din=d.din||{};d.din.menu=d.din.menu||['','','',''];d.din.menu[+el.dataset.menu]=el.value;save();render();}));
+ document.querySelectorAll('[data-whey]').forEach(b=>b.onclick=()=>{setV('whey',+b.dataset.whey);render();});
+ document.querySelectorAll('[data-scale]').forEach(b=>b.onclick=()=>{setV(b.dataset.scale,+b.dataset.v);render();});
+ document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{const d=day();d.bf={rid:+b.dataset.pick,mult:d.bf?.mult||1};save();tab='bugun';render();});
+ document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>{toggle(st.favs,+b.dataset.fav);save(true);render();});
+ document.querySelectorAll('[data-hide]').forEach(b=>b.onclick=()=>{toggle(st.hidden,+b.dataset.hide);save(true);render();});
+ document.querySelectorAll('[data-tag]').forEach(b=>b.onclick=()=>{tagF=b.dataset.tag;render();});
+ document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{tab=b.dataset.go;render();});
+ document.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const wo=st.workouts[cur]||(st.workouts[cur]={ex:{}});wo.day=b.dataset.day;if(!wo.day&&!Object.keys(wo.ex||{}).length)delete st.workouts[cur];save(true);render();});
+ document.querySelectorAll('[data-ex]').forEach(el=>el.addEventListener('change',()=>{const wo=wkt();const a=wo.ex[el.dataset.ex]||(wo.ex[el.dataset.ex]=[]);
+  const i=+el.dataset.i;a[i]=a[i]||['',''];a[i][+el.dataset.k]=el.value===''?'':+el.value;save();}));
+ document.querySelectorAll('[data-addset]').forEach(b=>b.onclick=()=>{const wo=wkt();const a=wo.ex[b.dataset.addset]||(wo.ex[b.dataset.addset]=[]);
+  const e=findEx(b.dataset.addset);while(a.length<(isDeload(st.settings,cur)?Math.ceil(e.sets/2):e.sets))a.push(['','']);a.push(['','']);save(true);render();});
+ const pb=$('#parseBtn');if(pb)pb.onclick=()=>{const wo=wkt();wo.raw=$('#raw').value;const r=parseNote(wo.raw,wo.day);Object.assign(wo.ex,r.res);save(true);render();
+  const n=Object.keys(r.res).length;$('#parseMsg').textContent=`${n} hareket işlendi.`+(r.unknown.length?` Tanınmayan satır: ${r.unknown.join(' / ')}`:'');};
+ const q1=$('#q');if(q1){q1.oninput=()=>{q=q1.value;const pos=q1.selectionStart;render();const n=$('#q');n.focus();n.setSelectionRange(pos,pos);};
+  $('#onlyFav').onchange=e=>{onlyFav=e.target.checked;render();};$('#showHidden').onchange=e=>{showHidden=e.target.checked;render();};}
+ const ak=$('#applyK');if(ak)ak.onclick=()=>{st.settings.kcal=+ak.dataset.k;st.settings.maint=Math.round(+ak.dataset.m/50)*50;save();render();};
+ const rb=$('#repBtn');if(rb)rb.onclick=()=>{const t=report();const ta=$('#rep');ta.value=t;ta.select();
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>flash('Rapor kopyalandı')).catch(()=>{try{document.execCommand('copy');flash('Rapor kopyalandı');}catch(e){flash('Metni seçip kendin kopyala',true);}});};
+ document.querySelectorAll('[data-s]').forEach(el=>el.addEventListener('change',()=>{const k=el.dataset.s;let v=el.value;
+  if(k==='molaWeeks')v=v.split(/[ ,;]+/).map(Number).filter(x=>x>0);else if(k!=='start')v=+v;st.settings[k]=v;save();render();}));
+ const ex=$('#exp');if(ex)ex.onclick=()=>{st._backup=Date.now();save(true);const b=new Blob([JSON.stringify(st,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`spor-diyet-yedek-${iso(new Date())}.json`;a.click();flash('Yedek indirildi');render();};
+ const im=$('#imp');if(im)im.onchange=()=>{const f=im.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.days)throw 0;if(confirm('Bu bilgisayardaki veriler yedekteki verilerle değiştirilsin mi?')){localStorage.setItem(KEY,JSON.stringify(o));load();render();flash('Yedek geri yüklendi');}}catch(e){flash('Bu dosya geçerli bir yedek değil',true);}};r.readAsText(f);};
+ const rs=$('#reset');if(rs)rs.onclick=()=>{if(confirm('Tüm veriler silinecek. Önce yedek indirdin mi?')&&confirm('Son onay: veriler geri getirilemez.')){localStorage.removeItem(KEY);load();render();}};}
+function wkt(){const wo=st.workouts[cur]||(st.workouts[cur]={});wo.ex=wo.ex||{};if(!wo.day)wo.day=DAY_PROGRAM[parse(cur).getDay()]||'A';return wo;}
+function toggle(a,v){const i=a.indexOf(v);i<0?a.push(v):a.splice(i,1);}
+
+window.addEventListener('DOMContentLoaded',()=>{load();
+ document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render();window.scrollTo(0,0);});
+ $('#prev').onclick=()=>{cur=addDays(cur,-1);render();};$('#next').onclick=()=>{cur=addDays(cur,1);render();};$('#isToday').onclick=()=>{cur=iso(new Date());render();};
+ document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select'))return;if(e.key==='ArrowLeft')$('#prev').click();if(e.key==='ArrowRight')$('#next').click();});
+ render();
+ if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});});
+
+</script></body></html>
